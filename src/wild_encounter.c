@@ -19,7 +19,6 @@
 
 struct WildEncounterData
 {
-    u32 rngState;
     u16 prevMetatileBehavior;
     u16 encounterRateBuff;
     u8 stepsSinceLastEncounter;
@@ -37,7 +36,6 @@ static void ApplyFluteEncounterRateMod(u32 *rate);
 static u8 GetFluteEncounterRateModType(void);
 static void ApplyCleanseTagEncounterRateMod(u32 *rate);
 static bool8 IsLeadMonHoldingCleanseTag(void);
-static u16 WildEncounterRandom(void);
 static void AddToWildEncounterRateBuff(u8 encouterRate);
 
 #include "data/wild_encounters.h"
@@ -66,7 +64,7 @@ void DisableWildEncounters(bool8 state)
 
 static u8 ChooseWildMonIndex_Land(void)
 {
-    u8 rand = Random() % ENCOUNTER_CHANCE_LAND_MONS_TOTAL;
+    u8 rand = RandomRangeGood(ENCOUNTER_CHANCE_LAND_MONS_TOTAL);
 
     if (rand < ENCOUNTER_CHANCE_LAND_MONS_SLOT_0)
         return 0;
@@ -96,7 +94,7 @@ static u8 ChooseWildMonIndex_Land(void)
 
 static u8 ChooseWildMonIndex_WaterRock(void)
 {
-    u8 rand = Random() % ENCOUNTER_CHANCE_WATER_MONS_TOTAL;
+    u8 rand = RandomRangeGood(ENCOUNTER_CHANCE_WATER_MONS_TOTAL);
 
     if (rand < ENCOUNTER_CHANCE_WATER_MONS_SLOT_0)
         return 0;
@@ -113,8 +111,8 @@ static u8 ChooseWildMonIndex_WaterRock(void)
 static u8 ChooseWildMonIndex_Fishing(u8 rod)
 {
     u8 wildMonIndex = 0;
-    u8 rand = Random() % max(max(ENCOUNTER_CHANCE_FISHING_MONS_OLD_ROD_TOTAL, ENCOUNTER_CHANCE_FISHING_MONS_GOOD_ROD_TOTAL),
-                             ENCOUNTER_CHANCE_FISHING_MONS_SUPER_ROD_TOTAL);
+    u8 rand = RandomRangeGood(max(max(ENCOUNTER_CHANCE_FISHING_MONS_OLD_ROD_TOTAL, ENCOUNTER_CHANCE_FISHING_MONS_GOOD_ROD_TOTAL),
+                             ENCOUNTER_CHANCE_FISHING_MONS_SUPER_ROD_TOTAL));
 
     switch (rod)
     {
@@ -165,7 +163,7 @@ static u8 ChooseWildMonLevel(const struct WildPokemon * info)
         hi = info->minLevel;
     }
     mod = hi - lo + 1;
-    res = Random() % mod;
+    res = RandomRangeGood(mod);
     return lo + res;
 }
 
@@ -226,7 +224,7 @@ static void GenerateWildMon(u16 species, u8 level, u8 slot)
     ZeroEnemyPartyMons();
     if (species != SPECIES_UNOWN)
     {
-        CreateMonWithNature(&gEnemyParty[0], species, level, 32, Random() % 25);
+        CreateMonWithNature(&gEnemyParty[0], species, level, 32, RandomRangeGood(25));
     }
     else
     {
@@ -241,7 +239,7 @@ static u32 GenerateUnownPersonalityByLetter(u8 letter)
     u32 personality;
     do
     {
-        personality = (Random() << 16) | Random();
+        personality = Random32();
     } while (GetUnownLetterByPersonalityLoByte(personality) != letter);
     return personality;
 }
@@ -297,7 +295,7 @@ static u16 GenerateFishingEncounter(const struct WildPokemonInfo * info, u8 rod)
 
 static bool8 DoWildEncounterRateDiceRoll(u16 a0)
 {
-    if (WildEncounterRandom() % 1600 < a0)
+    if (RandomRangeGood(1600) < a0)
         return TRUE;
     return FALSE;
 }
@@ -343,7 +341,7 @@ static u8 GetAbilityEncounterRateModType(void)
 
 static bool8 DoGlobalWildEncounterDiceRoll(void)
 {
-    if ((Random() % 100) >= 60)
+    if (RandomPercentageGood() >= 60)
         return FALSE;
     return TRUE;
 }
@@ -544,7 +542,7 @@ u16 GetLocalWildMon(bool8 *isWaterMon)
         return waterMonsInfo->wildPokemon[ChooseWildMonIndex_WaterRock()].species;
     }
     // Either land or water Pokemon
-    if ((Random() % 100) < 80)
+    if (RandomPercentageGood() < 80)
     {
         return landMonsInfo->wildPokemon[ChooseWildMonIndex_Land()].species;
     }
@@ -654,18 +652,6 @@ static bool8 IsLeadMonHoldingCleanseTag(void)
         return FALSE;
 }
 
-void SeedWildEncounterRng(u16 seed)
-{
-    sWildEncounterData.rngState = seed;
-    ResetEncounterRateModifiers();
-}
-
-static u16 WildEncounterRandom(void)
-{
-    sWildEncounterData.rngState = ISO_RANDOMIZE2(sWildEncounterData.rngState);
-    return sWildEncounterData.rngState >> 16;
-}
-
 static u8 GetMapBaseEncounterCooldown(u8 encounterType)
 {
     u16 headerIdx = GetCurrentMapWildMonHeaderId();
@@ -745,7 +731,7 @@ static bool8 HandleWildEncounterCooldown(u32 currMetatileAttrs)
     if (sWildEncounterData.stepsSinceLastEncounter >= minSteps)
         return TRUE;
     sWildEncounterData.stepsSinceLastEncounter++;
-    if ((Random() % 100) < encRate)
+    if (RandomPercentageGood() < encRate)
         return TRUE;
     return FALSE;
 }

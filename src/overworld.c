@@ -1133,8 +1133,8 @@ static void PlayAmbientCry(void)
     if (sIsAmbientCryWaterMon == TRUE
         && !MetatileBehavior_IsSurfable(MapGridGetMetatileBehaviorAt(x, y)))
         return;
-    pan = (Random() % 88) + 212;
-    volume = (Random() % 30) + 50;
+    pan = RandomRangeFast(88) + 212;
+    volume = RandomRangeFast(30) + 50;
 
     if (gDisableMapMusicChangeOnMapLoad == MUSIC_DISABLE_STOP)
     {
@@ -1160,11 +1160,11 @@ void UpdateAmbientCry(s16 *state, u16 *delayCounter)
             *state = 1;
         break;
     case 1:
-        *delayCounter = (Random() % 2400) + 1200;
+        *delayCounter = RandomRangeFast(2400) + 1200;
         *state = 3;
         break;
     case 2:
-        *delayCounter = (Random() % 1200) + 1200;
+        *delayCounter = RandomRangeFast(1200) + 1200;
         *state = 3;
         break;
     case 3:
@@ -1278,7 +1278,7 @@ static const int sUnusedData[] = {
       44
 };
 
-const struct Coords32 gDirectionToVectors[] = 
+const struct Coords32 gDirectionToVectors[] =
 {
     [DIR_NONE]      = { 0,  0},
     [DIR_SOUTH]     = { 0,  1},

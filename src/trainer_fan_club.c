@@ -126,7 +126,7 @@ static u8 PlayerGainRandomTrainerFan(struct TrainerFanClub *fanClub)
         if (!(GET_TRAINER_FAN_CLUB_FLAG(sFanClubMemberIds[i])))
         {
             idx = i;
-            if (Random() % 2)
+            if (RandomBool())
             {
                 SET_TRAINER_FAN_CLUB_FLAG(sFanClubMemberIds[i]);
                 return sFanClubMemberIds[i];
@@ -163,7 +163,7 @@ static u8 PlayerLoseRandomTrainerFan(struct TrainerFanClub *fanClub)
         if (GET_TRAINER_FAN_CLUB_FLAG(sFanClubMemberIds[i]))
         {
             idx = i;
-            if (Random() % 2)
+            if (RandomBool())
             {
                 FLIP_TRAINER_FAN_CLUB_FLAG(sFanClubMemberIds[i]);
                 return sFanClubMemberIds[i];

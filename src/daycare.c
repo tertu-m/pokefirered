@@ -806,14 +806,14 @@ static void InheritIVs(struct Pokemon *egg, struct DayCare *daycare)
     for (i = 0; i < NELEMS(selectedIvs); i++)
     {
         // Randomly pick an IV from the available list and stop from being chosen again.
-        selectedIvs[i] = availableIVs[Random() % (NUM_STATS - i)];
+        selectedIvs[i] = availableIVs[RandomRangeGood(NUM_STATS - i)];
         RemoveIVIndexFromList(availableIVs, selectedIvs[i]);
     }
 
     // Determine which parent each of the selected IVs should inherit from.
     for (i = 0; i < NELEMS(selectedIvs); i++)
     {
-        whichParent[i] = Random() % DAYCARE_MON_COUNT;
+        whichParent[i] = RandomRangeGood(DAYCARE_MON_COUNT);
     }
 
     // Set each of inherited IVs on the egg mon.
@@ -2140,7 +2140,7 @@ static void CreateRandomEggShardSprite(void)
     s16 velocity1 = sEggShardVelocities[sEggHatchData->eggShardVelocityID][0];
     s16 velocity2 = sEggShardVelocities[sEggHatchData->eggShardVelocityID][1];
     sEggHatchData->eggShardVelocityID++;
-    spriteAnimIndex = Random() % 4;
+    spriteAnimIndex = RandomBits(2);
     CreateEggShardSprite(120, 60, velocity1, velocity2, 100, spriteAnimIndex);
 }
 

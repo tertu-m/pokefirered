@@ -710,7 +710,7 @@ static void AnimSwirlingSnowball_Step1(struct Sprite *sprite)
 static void AnimSwirlingSnowball_Step2(struct Sprite *sprite)
 {
     s16 tempVar = GetBattlerSide(gBattleAnimAttacker) != B_SIDE_PLAYER ? 20 : -20;
-    
+
     if (sprite->data[5] <= 31)
     {
         sprite->x2 = Sin(sprite->data[0], tempVar) - sprite->data[3];
@@ -1441,8 +1441,8 @@ static void InitIceBallParticle(struct Sprite *sprite)
 
     sprite->oam.tileNum += 8;
     InitSpritePosToAnimTarget(sprite, TRUE);
-    randA = (Random() & 0xFF) + 256;
-    randB = Random() & 0x1FF;
+    randA = RandomBits(8) + 256;
+    randB = RandomBits(9);
     if (randB > 0xFF)
         randB = 256 - randB;
     sprite->data[1] = randA;

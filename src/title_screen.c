@@ -348,7 +348,7 @@ void CB2_InitTitleScreen(void)
         // fallthrough
     case 0:
         SetVBlankCallback(NULL);
-        StartTimer1();
+        StartSeedTimer();
         InitHeap(gHeap, HEAP_SIZE);
         ResetTasks();
         ResetSpriteData();

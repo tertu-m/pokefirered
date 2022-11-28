@@ -592,7 +592,7 @@ static void SampleRenewableItemFlags(void)
 
     for (i = 0; i < ARRAY_COUNT(sRenewableHiddenItems); i++)
     {
-        rval = Random() % 100;
+        rval = RandomPercentageGood();
         if (rval >= 90)
             flags = sRenewableHiddenItems[i].rare;
         else if (rval >= 60)

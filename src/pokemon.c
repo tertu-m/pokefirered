@@ -1434,7 +1434,7 @@ const u8 gStatStageRatios[][2] =
     { 10, 35 },
     { 10, 30 },
     { 10, 25 },
-    { 10, 20 }, 
+    { 10, 20 },
     { 10, 15 },
     { 10, 10 },
     { 15, 10 },
@@ -1449,7 +1449,7 @@ const u8 gStatStageRatios[][2] =
 
 static const u8 sFiller = _("");
 
-static const u8 sHoldEffectToType[][2] = 
+static const u8 sHoldEffectToType[][2] =
 {
     {HOLD_EFFECT_BUG_POWER, TYPE_BUG},
     {HOLD_EFFECT_STEEL_POWER, TYPE_STEEL},
@@ -1470,13 +1470,13 @@ static const u8 sHoldEffectToType[][2] =
     {HOLD_EFFECT_NORMAL_POWER, TYPE_NORMAL},
 };
 
-const struct SpriteTemplate gSpriteTemplates_Battlers[] = 
+const struct SpriteTemplate gSpriteTemplates_Battlers[] =
 {
     [B_POSITION_PLAYER_LEFT] = {
         .tileTag = TAG_NONE,
         .paletteTag = 0,
         .oam = &gOamData_BattlerPlayer,
-        .anims = NULL, 
+        .anims = NULL,
         .images = gBattlerPicTable_PlayerLeft,
         .affineAnims = gAffineAnims_BattleSpritePlayerSide,
         .callback = SpriteCB_AllyMon,
@@ -1485,7 +1485,7 @@ const struct SpriteTemplate gSpriteTemplates_Battlers[] =
         .tileTag = TAG_NONE,
         .paletteTag = 0,
         .oam = &gOamData_BattlerOpponent,
-        .anims = NULL, 
+        .anims = NULL,
         .images = gBattlerPicTable_OpponentLeft,
         .affineAnims = gAffineAnims_BattleSpriteOpponentSide,
         .callback = SpriteCB_EnemyMon,
@@ -1494,7 +1494,7 @@ const struct SpriteTemplate gSpriteTemplates_Battlers[] =
         .tileTag = TAG_NONE,
         .paletteTag = 0,
         .oam = &gOamData_BattlerPlayer,
-        .anims = NULL, 
+        .anims = NULL,
         .images = gBattlerPicTable_PlayerRight,
         .affineAnims = gAffineAnims_BattleSpritePlayerSide,
         .callback = SpriteCB_AllyMon,
@@ -1503,20 +1503,20 @@ const struct SpriteTemplate gSpriteTemplates_Battlers[] =
         .tileTag = TAG_NONE,
         .paletteTag = 0,
         .oam = &gOamData_BattlerOpponent,
-        .anims = NULL, 
+        .anims = NULL,
         .images = gBattlerPicTable_OpponentRight,
         .affineAnims = gAffineAnims_BattleSpriteOpponentSide,
         .callback = SpriteCB_EnemyMon,
     },
 };
 
-static const struct SpriteTemplate sTrainerBackSpriteTemplates[] = 
+static const struct SpriteTemplate sTrainerBackSpriteTemplates[] =
 {
     [TRAINER_BACK_PIC_RED] = {
         .tileTag = TAG_NONE,
         .paletteTag = 0,
         .oam = &gOamData_BattlerPlayer,
-        .anims = NULL, 
+        .anims = NULL,
         .images = gTrainerBackPicTable_Red,
         .affineAnims = gAffineAnims_BattleSpritePlayerSide,
         .callback = SpriteCB_AllyMon,
@@ -1525,7 +1525,7 @@ static const struct SpriteTemplate sTrainerBackSpriteTemplates[] =
         .tileTag = TAG_NONE,
         .paletteTag = 0,
         .oam = &gOamData_BattlerPlayer,
-        .anims = NULL, 
+        .anims = NULL,
         .images = gTrainerBackPicTable_Leaf,
         .affineAnims = gAffineAnims_BattleSpritePlayerSide,
         .callback = SpriteCB_AllyMon,
@@ -1534,7 +1534,7 @@ static const struct SpriteTemplate sTrainerBackSpriteTemplates[] =
         .tileTag = TAG_NONE,
         .paletteTag = 0,
         .oam = &gOamData_BattlerPlayer,
-        .anims = NULL, 
+        .anims = NULL,
         .images = gTrainerBackPicTable_RSBrendan,
         .affineAnims = gAffineAnims_BattleSpritePlayerSide,
         .callback = SpriteCB_AllyMon,
@@ -1543,7 +1543,7 @@ static const struct SpriteTemplate sTrainerBackSpriteTemplates[] =
         .tileTag = TAG_NONE,
         .paletteTag = 0,
         .oam = &gOamData_BattlerPlayer,
-        .anims = NULL, 
+        .anims = NULL,
         .images = gTrainerBackPicTable_RSMay,
         .affineAnims = gAffineAnims_BattleSpritePlayerSide,
         .callback = SpriteCB_AllyMon,
@@ -1552,7 +1552,7 @@ static const struct SpriteTemplate sTrainerBackSpriteTemplates[] =
         .tileTag = TAG_NONE,
         .paletteTag = 0,
         .oam = &gOamData_BattlerPlayer,
-        .anims = NULL, 
+        .anims = NULL,
         .images = gTrainerBackPicTable_Pokedude,
         .affineAnims = gAffineAnims_BattleSpritePlayerSide,
         .callback = SpriteCB_AllyMon,
@@ -1561,7 +1561,7 @@ static const struct SpriteTemplate sTrainerBackSpriteTemplates[] =
         .tileTag = TAG_NONE,
         .paletteTag = 0,
         .oam = &gOamData_BattlerPlayer,
-        .anims = NULL, 
+        .anims = NULL,
         .images = gTrainerBackPicTable_OldMan,
         .affineAnims = gAffineAnims_BattleSpritePlayerSide,
         .callback = SpriteCB_AllyMon,
@@ -1569,7 +1569,7 @@ static const struct SpriteTemplate sTrainerBackSpriteTemplates[] =
 };
 
 // Classes dummied out
-static const u8 sSecretBaseFacilityClasses[][5] = 
+static const u8 sSecretBaseFacilityClasses[][5] =
 {
     [MALE] = {
         FACILITY_CLASS_YOUNGSTER,
@@ -1587,7 +1587,7 @@ static const u8 sSecretBaseFacilityClasses[][5] =
     },
 };
 
-static const u8 sGetMonDataEVConstants[] = 
+static const u8 sGetMonDataEVConstants[] =
 {
     MON_DATA_HP_EV,
     MON_DATA_ATK_EV,
@@ -1597,12 +1597,12 @@ static const u8 sGetMonDataEVConstants[] =
     MON_DATA_SPATK_EV
 };
 
-static const u8 sStatsToRaise[] = 
+static const u8 sStatsToRaise[] =
 {
     STAT_ATK, STAT_ATK, STAT_SPEED, STAT_DEF, STAT_SPATK, STAT_ACC
 };
 
-static const s8 sFriendshipEventDeltas[][3] = 
+static const s8 sFriendshipEventDeltas[][3] =
 {
     [FRIENDSHIP_EVENT_GROW_LEVEL]           = { 5,  3,  2 },
     [FRIENDSHIP_EVENT_VITAMIN]              = { 5,  3,  2 },
@@ -1616,14 +1616,14 @@ static const s8 sFriendshipEventDeltas[][3] =
     [FRIENDSHIP_EVENT_FAINT_LARGE]          = {-5, -5, -10 },
 };
 
-static const u16 sHMMoves[] = 
+static const u16 sHMMoves[] =
 {
     MOVE_CUT, MOVE_FLY, MOVE_SURF, MOVE_STRENGTH, MOVE_FLASH,
     MOVE_ROCK_SMASH, MOVE_WATERFALL, MOVE_DIVE, 0xFFFF
 };
 
 #if defined(FIRERED)
-static const u16 sDeoxysBaseStats[] = 
+static const u16 sDeoxysBaseStats[] =
 {
     50, // Hp
     180, // Attack
@@ -1646,7 +1646,7 @@ static const u16 sDeoxysBaseStats[] =
 
 // The classes used by other players in the Union Room.
 // These should correspond with the overworld graphics in sUnionRoomObjGfxIds
-const u16 gUnionRoomFacilityClasses[NUM_UNION_ROOM_CLASSES * GENDER_COUNT] = 
+const u16 gUnionRoomFacilityClasses[NUM_UNION_ROOM_CLASSES * GENDER_COUNT] =
 {
     // Male
     FACILITY_CLASS_COOLTRAINER_M,
@@ -1668,7 +1668,7 @@ const u16 gUnionRoomFacilityClasses[NUM_UNION_ROOM_CLASSES * GENDER_COUNT] =
     FACILITY_CLASS_BEAUTY,
 };
 
-static const struct OamData sOakSpeechNidoranFDummyOamData = 
+static const struct OamData sOakSpeechNidoranFDummyOamData =
 {
     .y = 0,
     .affineMode = ST_OAM_AFFINE_OFF,
@@ -1684,12 +1684,12 @@ static const struct OamData sOakSpeechNidoranFDummyOamData =
     .paletteNum = 0,
 };
 
-static const struct SpriteTemplate sOakSpeechNidoranFDummyTemplate = 
+static const struct SpriteTemplate sOakSpeechNidoranFDummyTemplate =
 {
     .tileTag = TAG_NONE,
     .paletteTag = TAG_NONE,
     .oam = &sOakSpeechNidoranFDummyOamData,
-    .anims = gDummySpriteAnimTable, 
+    .anims = gDummySpriteAnimTable,
     .images = NULL,
     .affineAnims = gDummySpriteAffineAnimTable,
     .callback = SpriteCallbackDummy,
@@ -2671,7 +2671,7 @@ u8 GetDefaultMoveTarget(u8 battlerId)
     {
         u8 position;
 
-        if ((Random() & 1) == 0)
+        if ((RandomBool()) == 0)
             position = BATTLE_PARTNER(opposing);
         else
             position = opposing;
@@ -4132,7 +4132,7 @@ bool8 PokemonUseItemEffects(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mov
                 {
                     u16 evCount;
                     s32 r5;
-     
+
                     switch (i)
                     {
                     case 0: // EV_HP
@@ -4495,7 +4495,7 @@ bool8 PokemonItemUseNoEffect(struct Pokemon *mon, u16 item, u8 partyIndex, u8 mo
              cmdIndex < gBattlersCount;
              cmdIndex += 2)
         {
-            if (gBattlerPartyIndexes[cmdIndex] == partyIndex) 
+            if (gBattlerPartyIndexes[cmdIndex] == partyIndex)
             {
                 battlerId = cmdIndex;
                 break;
@@ -5304,7 +5304,7 @@ void AdjustFriendship(struct Pokemon *mon, u8 event)
         if (event == FRIENDSHIP_EVENT_WALKING)
         {
             // 50% chance every 128 steps
-            if (Random() & 1)
+            if (RandomBool())
                 return;
         }
         if (event == FRIENDSHIP_EVENT_LEAGUE_BATTLE)
@@ -5868,7 +5868,7 @@ void SetWildMonHeldItem(void)
 {
     if (!(gBattleTypeFlags & (BATTLE_TYPE_POKEDUDE | BATTLE_TYPE_LEGENDARY | BATTLE_TYPE_TRAINER)))
     {
-        u16 rnd = Random() % 100;
+        u16 rnd = RandomPercentageGood();
         u16 species = GetMonData(&gEnemyParty[0], MON_DATA_SPECIES, NULL);
         if (gBaseStats[species].item1 == gBaseStats[species].item2)
         {
@@ -6060,7 +6060,7 @@ void CreateEventLegalEnemyMon(void)
     if (itemId)
     {
         u8 heldItem[2];
-        
+
         heldItem[0] = itemId;
         heldItem[1] = itemId >> 8;
         SetMonData(&gEnemyParty[0], MON_DATA_HELD_ITEM, heldItem);
@@ -6070,7 +6070,7 @@ void CreateEventLegalEnemyMon(void)
 void HandleSetPokedexFlag(u16 nationalNum, u8 caseId, u32 personality)
 {
     u8 getFlagCaseId = (caseId == FLAG_SET_SEEN) ? FLAG_GET_SEEN : FLAG_GET_CAUGHT;
-    
+
     if (!GetSetPokedexFlag(nationalNum, getFlagCaseId))
     {
         GetSetPokedexFlag(nationalNum, caseId);
@@ -6112,7 +6112,7 @@ static void OakSpeechNidoranFSetupTemplate(struct OakSpeechNidoranFStruct *struc
     else
     {
         const struct SpriteTemplate *template = &gSpriteTemplates_Battlers[battlePosition];
-        
+
         structPtr->templates[0] = *template;
         for (j = 0; j < structPtr->frameCount; ++j)
                 structPtr->frameImages[j].data = &structPtr->bufferPtrs[0][j * 0x800];
@@ -6260,7 +6260,7 @@ void OakSpeechNidoranFFreeResources(void)
             if (sOakSpeechNidoranResources->templates != NULL)
                 FREE_AND_SET_NULL(sOakSpeechNidoranResources->templates);
             if (sOakSpeechNidoranResources->bufferPtrs != NULL)
-                FREE_AND_SET_NULL(sOakSpeechNidoranResources->bufferPtrs);                    
+                FREE_AND_SET_NULL(sOakSpeechNidoranResources->bufferPtrs);
             if (sOakSpeechNidoranResources->dataBuffer != NULL)
                 FREE_AND_SET_NULL(sOakSpeechNidoranResources->dataBuffer);
             memset(sOakSpeechNidoranResources, 0, sizeof(struct OakSpeechNidoranFStruct));

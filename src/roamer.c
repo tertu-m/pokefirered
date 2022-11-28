@@ -114,7 +114,7 @@ void CreateInitialRoamerMon(void)
     ROAMER->smart = GetMonData(mon, MON_DATA_SMART);
     ROAMER->tough = GetMonData(mon, MON_DATA_TOUGH);
     sRoamerLocation[MAP_GRP] = ROAMER_MAP_GROUP;
-    sRoamerLocation[MAP_NUM] = sRoamerLocations[Random() % NUM_LOCATION_SETS][0];
+    sRoamerLocation[MAP_NUM] = sRoamerLocations[RandomRangeGood(NUM_LOCATION_SETS)][0];
 }
 
 void InitRoamer(void)
@@ -148,7 +148,7 @@ void RoamerMoveToOtherLocationSet(void)
     // different from the roamer's current map
     while (1)
     {
-        mapNum = sRoamerLocations[Random() % NUM_LOCATION_SETS][0];
+        mapNum = sRoamerLocations[RandomRangeGood(NUM_LOCATION_SETS)][0];
         if (sRoamerLocation[MAP_NUM] != mapNum)
         {
             sRoamerLocation[MAP_NUM] = mapNum;
@@ -162,7 +162,7 @@ void RoamerMove(void)
 {
     u8 locSet = 0;
 
-    if ((Random() % 16) == 0)
+    if (RandomBits(4) == 0)
     {
         RoamerMoveToOtherLocationSet();
     }
@@ -181,7 +181,7 @@ void RoamerMove(void)
                 {
                     // Choose a new map (excluding the first) within this set
                     // Also exclude a map if the roamer was there 2 moves ago
-                    mapNum = sRoamerLocations[locSet][(Random() % (NUM_LOCATIONS_PER_SET - 1)) + 1];
+                    mapNum = sRoamerLocations[locSet][RandomRangeGood(NUM_LOCATIONS_PER_SET - 1) + 1];
                     if (!(sLocationHistory[2][MAP_GRP] == ROAMER_MAP_GROUP
                        && sLocationHistory[2][MAP_NUM] == mapNum)
                        && mapNum != MAP_NUM(UNDEFINED))
@@ -227,7 +227,7 @@ void CreateRoamerMonInstance(void)
 
 bool8 TryStartRoamerEncounter(void)
 {
-    if (IsRoamerAt(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum) == TRUE && (Random() % 4) == 0)
+    if (IsRoamerAt(gSaveBlock1Ptr->location.mapGroup, gSaveBlock1Ptr->location.mapNum) == TRUE && RandomBits(2) == 0)
     {
         CreateRoamerMonInstance();
         return TRUE;

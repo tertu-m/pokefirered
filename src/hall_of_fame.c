@@ -1082,7 +1082,7 @@ static void HallOfFame_PrintPlayerInfo(u8 unused1, u8 unused2)
     u8 text[20];
     u16 trainerId;
     s32 textWidth = sWindowTemplate.width * 8 - 6;
-    
+
     FillWindowPixelBuffer(1, PIXEL_FILL(1));
     PutWindowTilemap(1);
     DrawStdFrameWithCustomTileAndPalette(1, FALSE, 0x21D, 0xD);
@@ -1257,7 +1257,7 @@ static void SpriteCB_Confetti(struct Sprite* sprite)
         sprite->y2 += sprite->data[1];
 
         tableID = sprite->data[0];
-        rand = (Random() % 4) + 8;
+        rand = RandomBits(2) + 8;
         sprite->x2 = rand * gSineTable[tableID] / 256;
 
         sprite->data[0] += 4;
@@ -1269,15 +1269,15 @@ static bool8 Hof_SpawnConfetti(void)
     u8 spriteId;
     struct Sprite* sprite;
 
-    s16 posX = Random() % 240;
-    s16 posY = -(Random() % 8);
+    s16 posX = RandomRangeFast(240);
+    s16 posY = -RandomBits(3);
 
     spriteId = CreateSprite(&sSpriteTemplate_Confetti, posX, posY, 0);
     sprite = &gSprites[spriteId];
 
-    StartSpriteAnim(sprite, Random() % 17);
+    StartSpriteAnim(sprite, RandomRangeFast(17));
 
-    if (Random() & 3)
+    if (RandomBits(2))
         sprite->data[1] = 0;
     else
         sprite->data[1] = 1;

@@ -250,7 +250,7 @@ bool8 EC_DoesEasyChatStringFitOnLine(const u16 *easyChatWords, u8 columns, u8 ro
 
 static u16 GetRandomWordFromGroup(u16 groupId)
 {
-    u16 index = Random() % sEasyChatGroups[groupId].numWords;
+    u16 index = RandomRangeFast(sEasyChatGroups[groupId].numWords);
     if (groupId == EC_GROUP_POKEMON_2
      || groupId == EC_GROUP_POKEMON
      || groupId == EC_GROUP_MOVE_1
@@ -317,7 +317,7 @@ void ShowEasyChatMessage(void)
 
 void BufferRandomHobbyOrLifestyleString(void)
 {
-    int groupId = Random() & 1 ? EC_GROUP_HOBBIES : EC_GROUP_LIFESTYLE;
+    int groupId = RandomBool() ? EC_GROUP_HOBBIES : EC_GROUP_LIFESTYLE;
     u16 easyChatWord = GetRandomWordFromAnyGroup(groupId);
     CopyEasyChatWord(gStringVar2, easyChatWord);
 }
@@ -361,7 +361,7 @@ static u16 UnlockRandomTrendySaying(void)
     if (numAdditionalPhrasesUnlocked == 33)
         return EC_WORD_UNDEFINED;
 
-    additionalPhraseId = Random() % (33 - numAdditionalPhrasesUnlocked);
+    additionalPhraseId = RandomRangeFast(33 - numAdditionalPhrasesUnlocked);
     for (i = 0; i < 33; i++)
     {
         if (!IsTrendySayingUnlocked(i))
@@ -388,7 +388,7 @@ static u16 GetRandomUnlockedTrendySaying(void)
     if (additionalPhraseId == 0)
         return EC_WORD_UNDEFINED;
 
-    additionalPhraseId = Random() % additionalPhraseId;
+    additionalPhraseId = RandomRangeFast(additionalPhraseId);
     for (i = 0; i < 33; i++)
     {
         if (IsTrendySayingUnlocked(i))
@@ -417,7 +417,7 @@ static u16 GetRandomECPokemon(void)
     if (index == 0)
         return EC_WORD_UNDEFINED;
 
-    index = Random() % index;
+    index = RandomRangeFast(index);
     species = sEasyChatGroups[EC_GROUP_POKEMON_2].wordData.valueList;
     numWords = sEasyChatGroups[EC_GROUP_POKEMON_2].numWords;
     for (i = 0; i < numWords; i++)

@@ -2043,7 +2043,7 @@ static u32 Cmd_TabulateResults(struct BerryCrushGame * game, u8 *args)
         game->results.powder = Q_24_8_TO_INT(temp2);
 
         // Choose random second results page
-        game->results.randomPageId = Random() % NUM_RANDOM_RESULTS_PAGES;
+        game->results.randomPageId = RandomRangeFast(NUM_RANDOM_RESULTS_PAGES);
         for (i = 0; i < game->playerCount; ++i)
         {
             game->results.playerIdsRanked[0][i] = i;

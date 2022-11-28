@@ -293,7 +293,7 @@ static void TryShinyAnimAfterMonAnim(void)
 static void CompleteOnHealthbarDone(void)
 {
     s16 hpValue = MoveBattleBar(gActiveBattler, gHealthboxSpriteIds[gActiveBattler], HEALTH_BAR, 0);
-    
+
     SetHealthboxSpriteVisible(gHealthboxSpriteIds[gActiveBattler]);
     if (hpValue != -1)
     {
@@ -1386,14 +1386,14 @@ static void OpponentHandleChooseMove(void)
 
         do
         {
-            chosenMoveId = Random() & 3;
+            chosenMoveId = RandomBits(2);
             move = moveInfo->moves[chosenMoveId];
         }
         while (move == MOVE_NONE);
         if (gBattleMoves[move].target & (MOVE_TARGET_USER_OR_SELECTED | MOVE_TARGET_USER))
             BtlController_EmitTwoReturnValues(1, 10, (chosenMoveId) | (gActiveBattler << 8));
         else if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
-            BtlController_EmitTwoReturnValues(1, 10, (chosenMoveId) | (GetBattlerAtPosition(Random() & 2) << 8));
+            BtlController_EmitTwoReturnValues(1, 10, (chosenMoveId) | (GetBattlerAtPosition(RandomBits(1)) << 8));
         else
             BtlController_EmitTwoReturnValues(1, 10, (chosenMoveId) | (GetBattlerAtPosition(B_POSITION_PLAYER_LEFT) << 8));
 
@@ -1695,9 +1695,9 @@ static void OpponentHandleDrawPartyStatusSummary(void)
                 gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].opponentDrawPartyStatusSummaryDelay = 0;
             }
         }
-        gBattlerStatusSummaryTaskId[gActiveBattler] = CreatePartyStatusSummarySprites(gActiveBattler, 
-                                                                                      (struct HpAndStatus *)&gBattleBufferA[gActiveBattler][4], 
-                                                                                      gBattleBufferA[gActiveBattler][1], 
+        gBattlerStatusSummaryTaskId[gActiveBattler] = CreatePartyStatusSummarySprites(gActiveBattler,
+                                                                                      (struct HpAndStatus *)&gBattleBufferA[gActiveBattler][4],
+                                                                                      gBattleBufferA[gActiveBattler][1],
                                                                                       gBattleBufferA[gActiveBattler][2]);
         gBattleSpritesDataPtr->healthBoxesData[gActiveBattler].partyStatusDelayTimer = 0;
         if (gBattleBufferA[gActiveBattler][2])

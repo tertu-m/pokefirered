@@ -3,15 +3,30 @@
 
 #include "global.h"
 
-extern u32 gRngValue;
-extern u32 gRng2Value;
+extern const u16 clz_Lookup[];
 
 //Returns a 16-bit pseudorandom number
 u16 Random(void);
-u16 Random2(void);
 
 //Returns a 32-bit pseudorandom number
-#define Random32() (Random() | (Random() << 16))
+u32 Random32(void);
+
+// Burns a random number if the RNG isn't currently in use.
+void BurnRandomNumber(void);
+
+
+// Generates a random number in a range from 0 to x-1.
+// This approach is very fast but will be biased if x is not a power of 2 and
+// should be used with caution.
+#define RandomRangeFast(x) ((u16)(((u32)Random()*(u32)(x)) >> 16))
+
+// Returns x random bits, where x is a number between 1 and 16.
+// You can pass arguments up to 32, but don't do that.
+#define RandomBits(x) ((u16)(Random32() >> (32-(x))))
+// The same but arguments between 1 and 32 are valid.
+#define RandomBits32(x) (Random32() >> (32-(x)))
+
+#define RandomBool() (Random32() >> 31)
 
 // The number 1103515245 comes from the example implementation of rand and srand
 // in the ISO C standard.
@@ -20,7 +35,16 @@ u16 Random2(void);
 #define ISO_RANDOMIZE2(val)(RAND_MULT * (val) + 12345)
 
 //Sets the initial seed value of the pseudorandom number generator
-void SeedRng(u16 seed);
-void SeedRng2(u16 seed);
+void BootSeedRng(void);
+
+void StartSeedTimer(void);
+
+extern inline __attribute__((const)) const u16 CountLeadingZeroes(const u32 value);
+
+// Generates a random number in a range from 0 to x-1.
+// This approach is slower but adds no additional bias.
+extern inline u16 RandomRangeGood(const u16 range);
+
+extern inline u16 RandomPercentageGood();
 
 #endif // GUARD_RANDOM_H

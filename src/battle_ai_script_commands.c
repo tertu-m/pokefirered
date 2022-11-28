@@ -307,7 +307,7 @@ void BattleAI_SetupAIData(void)
         if (gBitTable[i] & moveLimitations)
             AI_THINKING_STRUCT->score[i] = 0;
 
-        AI_THINKING_STRUCT->simulatedRNG[i] = 100 - (Random() % 16);
+        AI_THINKING_STRUCT->simulatedRNG[i] = 100 - RandomBits(4);
     }
 
     gBattleResources->AI_ScriptsStack->size = 0;
@@ -316,7 +316,7 @@ void BattleAI_SetupAIData(void)
     // Decide a random target battlerId in doubles.
     if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
     {
-        gBattlerTarget = (Random() & BIT_FLANK);
+        gBattlerTarget = Random() & BIT_FLANK;
 
         if (gAbsentBattlerFlags & gBitTable[gBattlerTarget])
             gBattlerTarget ^= BIT_FLANK;
@@ -405,7 +405,7 @@ u8 BattleAI_ChooseMoveOrAction(void)
         }
     }
 
-    return consideredMoveArray[Random() % numOfBestMoves]; // break any ties that exist.
+    return consideredMoveArray[RandomRangeGood(numOfBestMoves)]; // break any ties that exist.
 }
 
 static void BattleAI_DoAIProcessing(void)
@@ -492,7 +492,7 @@ void RecordItemEffectBattle(u8 battlerId, u8 itemEffect)
 
 static void Cmd_if_random_less_than(void)
 {
-    if (Random() % 256 < sAIScriptPtr[1])
+    if (RandomBits(8) < sAIScriptPtr[1])
         sAIScriptPtr = T1_READ_PTR(sAIScriptPtr + 2);
     else
         sAIScriptPtr += 6;
@@ -500,7 +500,7 @@ static void Cmd_if_random_less_than(void)
 
 static void Cmd_if_random_greater_than(void)
 {
-    if (Random() % 256 > sAIScriptPtr[1])
+    if (RandomBits(8) > sAIScriptPtr[1])
         sAIScriptPtr = T1_READ_PTR(sAIScriptPtr + 2);
     else
         sAIScriptPtr += 6;
@@ -508,7 +508,7 @@ static void Cmd_if_random_greater_than(void)
 
 static void Cmd_if_random_equal(void)
 {
-    if (Random() % 256 == sAIScriptPtr[1])
+    if (RandomBits(8) == sAIScriptPtr[1])
         sAIScriptPtr = T1_READ_PTR(sAIScriptPtr + 2);
     else
         sAIScriptPtr += 6;
@@ -516,7 +516,7 @@ static void Cmd_if_random_equal(void)
 
 static void Cmd_if_random_not_equal(void)
 {
-    if (Random() % 256 != sAIScriptPtr[1])
+    if (RandomBits(8) != sAIScriptPtr[1])
         sAIScriptPtr = T1_READ_PTR(sAIScriptPtr + 2);
     else
         sAIScriptPtr += 6;
@@ -1170,7 +1170,7 @@ static void Cmd_get_ability(void)
             if (gBaseStats[gBattleMons[battlerId].species].abilities[1] != ABILITY_NONE)
             {
                 // AI has no knowledge of opponent, so it guesses which ability.
-                if (Random() % 2)
+                if (RandomBool())
                     AI_THINKING_STRUCT->funcResult = gBaseStats[gBattleMons[battlerId].species].abilities[0];
                 else
                     AI_THINKING_STRUCT->funcResult = gBaseStats[gBattleMons[battlerId].species].abilities[1];
@@ -1729,7 +1729,7 @@ static void Cmd_if_random_safari_flee(void)
     else
         safariFleeRate = gBattleStruct->safariEscapeFactor;
     safariFleeRate *= 5;
-    if ((u8)(Random() % 100) < safariFleeRate)
+    if ((u8)(RandomRangeGood(100)) < safariFleeRate)
         sAIScriptPtr = T1_READ_PTR(sAIScriptPtr + 1);
     else
         sAIScriptPtr += 5;

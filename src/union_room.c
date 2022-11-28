@@ -1170,7 +1170,7 @@ static u32 IsTryingToTradeAcrossVersionTooSoon(struct WirelessLink_Group * data,
 {
     struct RfuPlayer * partner = &data->playerList->players[id];
 
-    if (sPlayerCurrActivity == ACTIVITY_TRADE 
+    if (sPlayerCurrActivity == ACTIVITY_TRADE
      && partner->rfu.data.compatibility.version != VERSION_FIRE_RED
      && partner->rfu.data.compatibility.version != VERSION_LEAF_GREEN)
     {
@@ -3897,16 +3897,16 @@ static s32 UnionRoomGetPlayerInteractionResponse(struct RfuPlayerList * list, bo
         switch (player->rfu.data.activity & 0x3F)
         {
         case ACTIVITY_BATTLE_SINGLE:
-            StringExpandPlaceholders(gStringVar4, gTexts_UR_BattleReaction[playerGender][Random() % 4]);
+            StringExpandPlaceholders(gStringVar4, gTexts_UR_BattleReaction[playerGender][RandomBits(2)]);
             break;
         case ACTIVITY_TRADE:
-            StringExpandPlaceholders(gStringVar4, gTexts_UR_TradeReaction[playerGender][Random() % 2]);
+            StringExpandPlaceholders(gStringVar4, gTexts_UR_TradeReaction[playerGender][RandomBits(1)]);
             break;
         case ACTIVITY_CHAT:
-            StringExpandPlaceholders(gStringVar4, gTexts_UR_ChatReaction[playerGender][Random() % 4]);
+            StringExpandPlaceholders(gStringVar4, gTexts_UR_ChatReaction[playerGender][RandomBits(2)]);
             break;
         case ACTIVITY_CARD:
-            StringExpandPlaceholders(gStringVar4, gTexts_UR_TrainerCardReaction[playerGender][Random() % 2]);
+            StringExpandPlaceholders(gStringVar4, gTexts_UR_TrainerCardReaction[playerGender][RandomBits(1)]);
             break;
         default:
             StringExpandPlaceholders(gStringVar4, gText_UR_TrainerAppearsBusy);

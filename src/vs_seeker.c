@@ -639,7 +639,7 @@ void VsSeekerResetObjectMovementAfterChargeComplete(void)
     for (i = 0; i < gMapHeader.events->objectEventCount; i++)
     {
         if ((templates[i].objUnion.normal.trainerType == TRAINER_TYPE_NORMAL
-          || templates[i].objUnion.normal.trainerType == TRAINER_TYPE_BURIED) 
+          || templates[i].objUnion.normal.trainerType == TRAINER_TYPE_BURIED)
          && (templates[i].objUnion.normal.movementType == MOVEMENT_TYPE_RAISE_HAND_AND_STOP
           || templates[i].objUnion.normal.movementType == MOVEMENT_TYPE_RAISE_HAND_AND_JUMP
           || templates[i].objUnion.normal.movementType == MOVEMENT_TYPE_RAISE_HAND_AND_SWIM))
@@ -890,7 +890,7 @@ static u8 GetVsSeekerResponseInArea(const VsSeekerData * vsSeekerData)
             }
             else
             {
-                rval = Random() % 100; // Even if it's overwritten below, it progresses the RNG.
+                rval = RandomPercentageGood(); // Even if it's overwritten below, it progresses the RNG.
                 response = GetCurVsSeekerResponse(vsSeekerIdx, trainerIdx);
                 if (response == VSSEEKER_SINGLE_RESP_YES)
                     rval = 100; // Definitely yes
@@ -941,7 +941,7 @@ void ClearRematchStateByTrainerId(void)
 
         for (i = 0; i < gMapHeader.events->objectEventCount; i++)
         {
-            if ((objectEventTemplates[i].objUnion.normal.trainerType == TRAINER_TYPE_NORMAL 
+            if ((objectEventTemplates[i].objUnion.normal.trainerType == TRAINER_TYPE_NORMAL
               || objectEventTemplates[i].objUnion.normal.trainerType == TRAINER_TYPE_BURIED)
               && vsSeekerDataIdx == LookupVsSeekerOpponentInArray(sVsSeekerData, GetTrainerFlagFromScript(objectEventTemplates[i].script)))
             {
@@ -1103,7 +1103,7 @@ static bool8 ObjectEventIdIsSane(u8 objectEventId)
 
 static u8 GetRandomFaceDirectionMovementType()
 {
-    u16 r1 = Random() % 4;
+    u16 r1 = RandomBits(2);
 
     switch (r1)
     {

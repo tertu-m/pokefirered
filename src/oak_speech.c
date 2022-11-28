@@ -1893,9 +1893,9 @@ static void GetDefaultName(u8 hasPlayerBeenNamed, u8 rivalNameChoice)
     if (hasPlayerBeenNamed == FALSE)
     {
         if (gSaveBlock2Ptr->playerGender == MALE)
-            src = sMaleNameChoices[Random() % 19];
+            src = sMaleNameChoices[RandomRangeFast(19)];
         else
-            src = sFemaleNameChoices[Random() % 19];
+            src = sFemaleNameChoices[RandomRangeFast(19)];
         dest = gSaveBlock2Ptr->playerName;
     }
     else

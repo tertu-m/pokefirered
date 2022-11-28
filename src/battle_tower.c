@@ -320,7 +320,7 @@ static bool8 ChooseSpecialBattleTowerTrainer(void)
         else
         {
             gSaveBlock2Ptr->battleTower.battleTowerTrainerId =
-                trainerIds[Random() % numCandidates] + BATTLE_TOWER_RECORD_MIXING_TRAINER_BASE_ID;
+                trainerIds[RandomRangeGood(numCandidates)] + BATTLE_TOWER_RECORD_MIXING_TRAINER_BASE_ID;
             retVal = TRUE;
         }
     }
@@ -347,6 +347,7 @@ void ChooseNextBattleTowerTrainer(void)
         {
             do
             {
+                // XXX: I don't understand this code yet
                 trainerId = ((Random() & 0xFF) * 5) >> 7;
                 trainerId += (gSaveBlock2Ptr->battleTower.curStreakChallengesNum[levelType] - 1) * 10 + 20;
 
@@ -480,7 +481,7 @@ static void UpdateOrInsertReceivedBattleTowerRecord(struct BattleTowerRecord * r
             l++;
         }
     }
-    i = Random() % l;
+    i = RandomRangeGood(l);
     gSaveBlock2Ptr->battleTower.records[indices[i]] = *record;
 }
 
@@ -1235,9 +1236,9 @@ void DetermineBattleTowerPrize(void)
     u8 levelType = gSaveBlock2Ptr->battleTower.battleTowerLevelType;
 
     if (gSaveBlock2Ptr->battleTower.curStreakChallengesNum[levelType] - 1 > 5)
-        gSaveBlock2Ptr->battleTower.prizeItem = sLongStreakPrizes[Random() % NELEMS(sLongStreakPrizes)];
+        gSaveBlock2Ptr->battleTower.prizeItem = sLongStreakPrizes[RandomRangeGood(NELEMS(sLongStreakPrizes))];
     else
-        gSaveBlock2Ptr->battleTower.prizeItem = sShortStreakPrizes[Random() % NELEMS(sShortStreakPrizes)];
+        gSaveBlock2Ptr->battleTower.prizeItem = sShortStreakPrizes[RandomRangeGood(NELEMS(sShortStreakPrizes))];
 }
 
 void GiveBattleTowerPrize(void)

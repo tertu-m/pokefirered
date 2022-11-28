@@ -1643,7 +1643,7 @@ static void HBlankCB_Battle(void)
 void VBlankCB_Battle(void)
 {
     // Change gRngSeed every vblank.
-    Random();
+    BurnRandomNumber();
 
     SetGpuReg(REG_OFFSET_BG0HOFS, gBattle_BG0_X);
     SetGpuReg(REG_OFFSET_BG0VOFS, gBattle_BG0_Y);
@@ -3503,7 +3503,7 @@ u8 GetWhoStrikesFirst(u8 battler1, u8 battler2, bool8 ignoreChosenMoves)
         // both priorities are the same
         if (gBattleMoves[moveBattler1].priority == gBattleMoves[moveBattler2].priority)
         {
-            if (speedBattler1 == speedBattler2 && Random() & 1)
+            if (speedBattler1 == speedBattler2 && RandomBool())
                 strikesFirst = 2; // same speeds, same priorities
             else if (speedBattler1 < speedBattler2)
                 strikesFirst = 1; // battler2 has more speed
@@ -3516,7 +3516,7 @@ u8 GetWhoStrikesFirst(u8 battler1, u8 battler2, bool8 ignoreChosenMoves)
     // both priorities are equal to 0
     else
     {
-        if (speedBattler1 == speedBattler2 && Random() & 1)
+        if (speedBattler1 == speedBattler2 && RandomBool())
             strikesFirst = 2; // same speeds, same priorities
         else if (speedBattler1 < speedBattler2)
             strikesFirst = 1; // battler2 has more speed
@@ -4047,14 +4047,14 @@ static void HandleAction_UseMove(void)
             {
                 if (GetBattlerSide(gBattlerAttacker) == B_SIDE_PLAYER)
                 {
-                    if (Random() & 1)
+                    if (RandomBool())
                         gBattlerTarget = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
                     else
                         gBattlerTarget = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
                 }
                 else
                 {
-                    if (Random() & 1)
+                    if (RandomBool())
                         gBattlerTarget = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
                     else
                         gBattlerTarget = GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT);
@@ -4091,14 +4091,14 @@ static void HandleAction_UseMove(void)
     {
         if (GetBattlerSide(gBattlerAttacker) == B_SIDE_PLAYER)
         {
-            if (Random() & 1)
+            if (RandomBool())
                 gBattlerTarget = GetBattlerAtPosition(B_POSITION_OPPONENT_LEFT);
             else
                 gBattlerTarget = GetBattlerAtPosition(B_POSITION_OPPONENT_RIGHT);
         }
         else
         {
-            if (Random() & 1)
+            if (RandomBool())
                 gBattlerTarget = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT);
             else
                 gBattlerTarget = GetBattlerAtPosition(B_POSITION_PLAYER_RIGHT);
@@ -4257,7 +4257,7 @@ bool8 TryRunFromBattle(u8 battler)
             if (gBattleMons[battler].speed < gBattleMons[BATTLE_OPPOSITE(battler)].speed)
             {
                 speedVar = (gBattleMons[battler].speed * 128) / (gBattleMons[BATTLE_OPPOSITE(battler)].speed) + (gBattleStruct->runTries * 30);
-                if (speedVar > (Random() & 0xFF))
+                if (speedVar > RandomBits(8))
                     effect++;
             }
             else // same speed or faster
@@ -4380,7 +4380,7 @@ static void HandleAction_ThrowBait(void)
     gBattlerAttacker = gBattlerByTurnOrder[gCurrentTurnActionNumber];
     gBattle_BG0_X = 0;
     gBattle_BG0_Y = 0;
-    gBattleStruct->safariBaitThrowCounter += Random() % 5 + 2;
+    gBattleStruct->safariBaitThrowCounter += RandomRangeGood(5) + 2;
     if (gBattleStruct->safariBaitThrowCounter > 6)
         gBattleStruct->safariBaitThrowCounter = 6;
     gBattleStruct->safariRockThrowCounter = 0;
@@ -4396,7 +4396,7 @@ static void HandleAction_ThrowRock(void)
     gBattlerAttacker = gBattlerByTurnOrder[gCurrentTurnActionNumber];
     gBattle_BG0_X = 0;
     gBattle_BG0_Y = 0;
-    gBattleStruct->safariRockThrowCounter += Random() % 5 + 2;
+    gBattleStruct->safariRockThrowCounter += RandomRangeGood(5) + 2;
     if (gBattleStruct->safariRockThrowCounter > 6)
         gBattleStruct->safariRockThrowCounter = 6;
     gBattleStruct->safariBaitThrowCounter = 0;

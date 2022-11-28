@@ -302,7 +302,7 @@ static void AnimConfusionDuck_Step(struct Sprite *sprite)
 static void AnimSimplePaletteBlend(struct Sprite *sprite)
 {
     u32 selectedPalettes = UnpackSelectedBattlePalettes(gBattleAnimArgs[0]);
-    
+
     BeginNormalPaletteFade(selectedPalettes, gBattleAnimArgs[1], gBattleAnimArgs[2], gBattleAnimArgs[3], gBattleAnimArgs[4]);
     sprite->invisible = TRUE;
     sprite->callback = AnimSimplePaletteBlend_Step;
@@ -944,14 +944,14 @@ static void AnimHitSplatHandleInvert(struct Sprite *sprite)
 static void AnimHitSplatRandom(struct Sprite *sprite)
 {
     if (gBattleAnimArgs[1] == -1)
-        gBattleAnimArgs[1] = Random() & 3;
+        gBattleAnimArgs[1] = RandomBits(2);
     StartSpriteAffineAnim(sprite, gBattleAnimArgs[1]);
     if (gBattleAnimArgs[0] == ANIM_ATTACKER)
         InitSpritePosToAnimAttacker(sprite, FALSE);
     else
         InitSpritePosToAnimTarget(sprite, FALSE);
-    sprite->x2 += (Random() % 48) - 24;
-    sprite->y2 += (Random() % 24) - 12;
+    sprite->x2 += RandomRangeFast(48) - 24;
+    sprite->y2 += RandomRangeFast(24) - 12;
     StoreSpriteCallbackInData6(sprite, DestroySpriteAndMatrix);
     sprite->callback = RunStoredCallbackWhenAffineAnimEnds;
 }

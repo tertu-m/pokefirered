@@ -286,9 +286,9 @@ static void LinkTestScreen(void)
     ResetBlockSend();
     gLinkType = LINKTYPE_TRADE;
     OpenLink();
-    SeedRng(gMain.vblankCounter2);
+    //SeedRng(gMain.vblankCounter2);
     for (i = 0; i < TRAINER_ID_LENGTH; i++)
-        gSaveBlock2Ptr->playerTrainerId[i] = Random() % 256;
+        gSaveBlock2Ptr->playerTrainerId[i] = RandomBits(8);
 
     InitLinkTestBG(0, 2, 4, 0, 0);
     SetGpuReg(REG_OFFSET_DISPCNT, DISPCNT_MODE_0 | DISPCNT_OBJ_1D_MAP | DISPCNT_BG0_ON | DISPCNT_BG2_ON | DISPCNT_OBJ_ON);
@@ -1192,7 +1192,7 @@ void CheckLinkPlayersMatchSaved(void)
 
     for (i = 0; i < gSavedLinkPlayerCount; i++)
     {
-        if (gSavedLinkPlayers[i].trainerId != gLinkPlayers[i].trainerId 
+        if (gSavedLinkPlayers[i].trainerId != gLinkPlayers[i].trainerId
          || StringCompare(gSavedLinkPlayers[i].name, gLinkPlayers[i].name) != 0)
         {
             gLinkErrorOccurred = TRUE;

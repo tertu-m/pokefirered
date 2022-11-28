@@ -1970,7 +1970,7 @@ static void HandlePickBerries(void)
                     // Randomly give it to one of them
                     u8 playerId1 = sGame->playersAttemptingPick[column][0];
                     i = sGame->playersAttemptingPick[column][1]; // playerId2. Have to re-use the variable to match.
-                    if (!(Random() & 1))
+                    if (RandomBool())
                     {
                         playerIdPicked = playerId1;
                         playerIdMissed = i;
@@ -2617,7 +2617,7 @@ static void SetRandomPrize(void)
     case 5:  prizeSet = 2; break;
     }
 
-    prizeIdx = Random() % ARRAY_COUNT(sPrizeBerryIds[0]);;
+    prizeIdx = RandomRangeGood(ARRAY_COUNT(sPrizeBerryIds[0]));;
     for (i = 0; i < MAX_RFU_PLAYERS; i++)
         sGame->berryResults[i][BERRY_PRIZE] = sPrizeBerryIds[prizeSet][prizeIdx];
 }
@@ -2730,7 +2730,7 @@ static u32 GetScore(u8 playerId)
 
     // Get points lost for berries missed
     scoreLost = sGame->berryResults[playerId][BERRY_MISSED] * sBerryScoreMultipliers[BERRY_MISSED];
-    
+
     if (score <= scoreLost)
         return 0;
     else
@@ -4523,7 +4523,7 @@ static void ShowResults(void)
 
                 ConvertIntToDecimalStringN(strBuff_Large, berriesPicked, STR_CONV_MODE_LEFT_ALIGN, 4);
                 width = GetStringWidth(FONT_SMALL, strBuff_Large, -1);
-                
+
                 // If player got the most of a berry type, highlight their number in red
                 if (maxBerriesPicked == berriesPicked && maxBerriesPicked != 0)
                     AddTextPrinterParameterized3(sGfx->windowIds[1], FONT_SMALL, sResultsXCoords[j] - width, sResultsYCoords[i], sTextColorTable[1], TEXT_SKIP_DRAW, strBuff_Large);

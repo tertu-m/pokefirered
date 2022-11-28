@@ -472,7 +472,7 @@ const struct SpriteTemplate gWeatherBallWaterDownSpriteTemplate =
     .callback = AnimWeatherBallDown,
 };
 
-void AnimTask_CreateRaindrops(u8 taskId) 
+void AnimTask_CreateRaindrops(u8 taskId)
 {
      u8 x, y;
 
@@ -485,20 +485,20 @@ void AnimTask_CreateRaindrops(u8 taskId)
     gTasks[taskId].data[0]++;
     if (gTasks[taskId].data[0] % gTasks[taskId].data[2] == 1)
     {
-        x = Random() % DISPLAY_WIDTH;
-        y = Random() % (DISPLAY_HEIGHT / 2);
+        x = RandomRangeFast(DISPLAY_WIDTH);
+        y = RandomRangeFast(DISPLAY_HEIGHT / 2);
         CreateSprite(&gRainDropSpriteTemplate, x, y, 4);
     }
     if (gTasks[taskId].data[0] == gTasks[taskId].data[3])
         DestroyAnimVisualTask(taskId);
 }
 
-static void AnimRainDrop(struct Sprite *sprite) 
+static void AnimRainDrop(struct Sprite *sprite)
 {
     sprite->callback = AnimRainDrop_Step;
 }
 
-static void AnimRainDrop_Step(struct Sprite *sprite) 
+static void AnimRainDrop_Step(struct Sprite *sprite)
 {
     if (++sprite->data[0] < 14) // Was 13 in emerald
     {
@@ -1015,8 +1015,8 @@ static void AnimSmallDriftingBubbles(struct Sprite *sprite)
 
     sprite->oam.tileNum += 8;
     InitSpritePosToAnimTarget(sprite, TRUE);
-    randData = (Random() & 0xFF) | 256;
-    randData2 = (Random() & 0x1FF);
+    randData = RandomBits(8) | 256;
+    randData2 = RandomBits(9);
     if (randData2 > 255)
         randData2 = 256 - randData2;
     sprite->data[1] = randData;
@@ -1454,9 +1454,9 @@ static void AnimWaterSportDroplet(struct Sprite *sprite)
         sprite->x += sprite->x2;
         sprite->y += sprite->y2;
         sprite->data[0] = 6;
-        sprite->data[2] = (Random() & 0x1F) - 16 + sprite->x;
-        sprite->data[4] = (Random() & 0x1F) - 16 + sprite->y;
-        sprite->data[5] = ~(Random() & 7);
+        sprite->data[2] = RandomBits(5) - 16 + sprite->x;
+        sprite->data[4] = RandomBits(5) - 16 + sprite->y;
+        sprite->data[5] = ~RandomBits(3);
         InitAnimArcTranslation(sprite);
         sprite->callback = AnimWaterSportDroplet_Step;
     }
@@ -1554,8 +1554,8 @@ static void CreateWaterPulseRingBubbles(struct Sprite *sprite, s32 xDiff, s32 yD
     combinedY = sprite->y + sprite->y2;
     if (yDiff < 0)
         unusedVar *= -1; //Needed to Match
-    somethingRandomY = yDiff + (Random() % 10) - 5;
-    somethingRandomX = -xDiff + (Random() % 10) - 5;
+    somethingRandomY = yDiff + RandomRangeFast(10) - 5;
+    somethingRandomX = -xDiff + RandomRangeFast(10) - 5;
 
     for (i = 0; i < 1; i++)
     {
@@ -1588,4 +1588,3 @@ static void CreateWaterPulseRingBubbles(struct Sprite *sprite, s32 xDiff, s32 yD
         }
     }
 }
-

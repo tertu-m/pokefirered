@@ -1708,7 +1708,7 @@ static bool8 Fishing2(struct Task *task)
     const s16 arr2[] = {1, 3, 6};
 
     task->tRoundsPlayed = 0;
-    task->tMinRoundsRequired = arr1[task->tFishingRod] + (Random() % arr2[task->tFishingRod]);
+    task->tMinRoundsRequired = arr1[task->tFishingRod] + RandomRangeGood(arr2[task->tFishingRod]);
     task->tPlayerGfxId = gObjectEvents[gPlayerAvatar.objectEventId].graphicsId;
     playerObjEvent = &gObjectEvents[gPlayerAvatar.objectEventId];
     ObjectEventClearHeldMovementIfActive(playerObjEvent);
@@ -1782,7 +1782,7 @@ static bool8 Fishing6(struct Task *task)
     task->tStep++;
     bite = FALSE;
 
-    if (!DoesCurrentMapHaveFishingMons() || Random() & 1)
+    if (!DoesCurrentMapHaveFishingMons() || RandomBool())
     {
         task->tStep = FISHING_NO_BITE;
     }
@@ -1833,7 +1833,7 @@ static bool8 Fishing9(struct Task *task)
     else if (task->tRoundsPlayed < 2)
     {
         // probability of having to play another round
-        s16 probability = Random() % 100;
+        s16 probability = RandomPercentageGood();
 
         if (arr[task->tFishingRod][task->tRoundsPlayed] > probability)
             task->tStep = FISHING_START_ROUND;

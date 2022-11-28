@@ -46,7 +46,6 @@ bool8 UpdateRepelCounter(void);
 void DisableWildEncounters(bool8 state);
 u8 GetUnownLetterByPersonalityLoByte(u32 personality);
 bool8 SweetScentWildEncounter(void);
-void SeedWildEncounterRng(u16 randVal);
 void ResetEncounterRateModifiers(void);
 bool8 TryStandardWildEncounter(u32 currMetatileAttrs);
 

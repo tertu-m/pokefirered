@@ -1087,7 +1087,7 @@ static void SetLinkTimeInterval(int intervalId)
     {
         // Link data is sent when timer reaches 0.
         // Set timer to 1 and set limit to special
-        // 'stopped' value so timer won't change        
+        // 'stopped' value so timer won't change
         sPokemonJump->linkTimerLimit = LINK_TIMER_STOPPED;
         sPokemonJump->linkTimer = 1;
     }
@@ -2631,7 +2631,7 @@ static void UnpackPrizeData(u16 data, u16 *itemId, u16 *quantity)
 
 static u16 GetPrizeItemId(void)
 {
-    u16 index = Random() % ARRAY_COUNT(sPrizeItems);
+    u16 index = RandomRangeGood(ARRAY_COUNT(sPrizeItems));
     return sPrizeItems[index];
 }
 

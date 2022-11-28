@@ -59,14 +59,14 @@ static bool8 ShouldSwitchIfWonderGuard(void)
              || i == gBattlerPartyIndexes[gActiveBattler])
                 continue;
             GetMonData(&gEnemyParty[i], MON_DATA_SPECIES); // Unused return value.
-            GetMonData(&gEnemyParty[i], MON_DATA_ABILITY_NUM); // Unused return value.        
+            GetMonData(&gEnemyParty[i], MON_DATA_ABILITY_NUM); // Unused return value.
             for (opposingBattler = GetBattlerAtPosition(B_POSITION_PLAYER_LEFT), j = 0; j < MAX_MON_MOVES; ++j)
             {
                 move = GetMonData(&gEnemyParty[i], MON_DATA_MOVE1 + j);
                 if (move == MOVE_NONE)
                     continue;
                 moveFlags = AI_TypeCalc(move, gBattleMons[opposingBattler].species, gBattleMons[opposingBattler].ability);
-                if (moveFlags & MOVE_RESULT_SUPER_EFFECTIVE && Random() % 3 < 2)
+                if (moveFlags & MOVE_RESULT_SUPER_EFFECTIVE && RandomRangeGood(3) < 2)
                 {
                     // We found a mon.
                     *(gBattleStruct->AI_monToSwitchIntoId + (GetBattlerPosition(gActiveBattler) >> 1)) = i;
@@ -85,7 +85,7 @@ static bool8 FindMonThatAbsorbsOpponentsMove(void)
     u8 absorbingTypeAbility;
     s32 i;
 
-    if ((HasSuperEffectiveMoveAgainstOpponents(TRUE) && Random() % 3) 
+    if ((HasSuperEffectiveMoveAgainstOpponents(TRUE) && RandomRangeGood(3))
     || (gLastLandedMoves[gActiveBattler] == MOVE_NONE))
         return FALSE;
     if (gLastLandedMoves[gActiveBattler] == 0xFFFF
@@ -132,7 +132,7 @@ static bool8 FindMonThatAbsorbsOpponentsMove(void)
             monAbility = gBaseStats[species].abilities[1];
         else
             monAbility = gBaseStats[species].abilities[0];
-        if (absorbingTypeAbility == monAbility && Random() & 1)
+        if (absorbingTypeAbility == monAbility && RandomBool())
         {
             // we found a mon
             *(gBattleStruct->AI_monToSwitchIntoId + (GetBattlerPosition(gActiveBattler) >> 1)) = i;
@@ -149,13 +149,13 @@ static bool8 ShouldSwitchIfNaturalCure(void)
      || (gBattleMons[gActiveBattler].ability != ABILITY_NATURAL_CURE)
      || (gBattleMons[gActiveBattler].hp < gBattleMons[gActiveBattler].maxHP / 2))
         return FALSE;
-    if ((gLastLandedMoves[gActiveBattler] == MOVE_NONE || gLastLandedMoves[gActiveBattler] == 0xFFFF) && Random() & 1)
+    if ((gLastLandedMoves[gActiveBattler] == MOVE_NONE || gLastLandedMoves[gActiveBattler] == 0xFFFF) && RandomBool())
     {
         *(gBattleStruct->AI_monToSwitchIntoId + (GetBattlerPosition(gActiveBattler) >> 1)) = PARTY_SIZE;
         BtlController_EmitTwoReturnValues(1, B_ACTION_SWITCH, 0);
         return TRUE;
     }
-    else if (gBattleMoves[gLastLandedMoves[gActiveBattler]].power == 0 && Random() & 1)
+    else if (gBattleMoves[gLastLandedMoves[gActiveBattler]].power == 0 && RandomBool())
     {
         *(gBattleStruct->AI_monToSwitchIntoId + (GetBattlerPosition(gActiveBattler) >> 1)) = PARTY_SIZE;
         BtlController_EmitTwoReturnValues(1, B_ACTION_SWITCH, 0);
@@ -164,7 +164,7 @@ static bool8 ShouldSwitchIfNaturalCure(void)
     if (FindMonWithFlagsAndSuperEffective(MOVE_RESULT_DOESNT_AFFECT_FOE, 1)
      || FindMonWithFlagsAndSuperEffective(MOVE_RESULT_NOT_VERY_EFFECTIVE, 1))
         return TRUE;
-    if (Random() & 1)
+    if (RandomBool())
     {
         *(gBattleStruct->AI_monToSwitchIntoId + (GetBattlerPosition(gActiveBattler) >> 1)) = PARTY_SIZE;
         BtlController_EmitTwoReturnValues(1, B_ACTION_SWITCH, 0);
@@ -192,7 +192,7 @@ static bool8 HasSuperEffectiveMoveAgainstOpponents(bool8 noRng)
             moveFlags = AI_TypeCalc(move, gBattleMons[opposingBattler].species, gBattleMons[opposingBattler].ability);
             if (moveFlags & MOVE_RESULT_SUPER_EFFECTIVE)
             {
-                if (noRng || (Random() % 10))
+                if (noRng || RandomRangeGood(10))
                     return TRUE;
             }
         }
@@ -212,7 +212,7 @@ static bool8 HasSuperEffectiveMoveAgainstOpponents(bool8 noRng)
             {
                 if (noRng)
                     return TRUE;
-                if (Random() % 10 != 0)
+                if (RandomRangeGood(10) != 0)
                     return TRUE;
             }
         }
@@ -287,7 +287,7 @@ static bool8 FindMonWithFlagsAndSuperEffective(u8 flags, u8 moduloPercent)
                 if (move == MOVE_NONE)
                     continue;
                 moveFlags = AI_TypeCalc(move, gBattleMons[battlerIn1].species, gBattleMons[battlerIn1].ability);
-                if (moveFlags & MOVE_RESULT_SUPER_EFFECTIVE && Random() % moduloPercent == 0)
+                if (moveFlags & MOVE_RESULT_SUPER_EFFECTIVE && RandomRangeGood(moduloPercent) == 0)
                 {
                     *(gBattleStruct->AI_monToSwitchIntoId + (GetBattlerPosition(gActiveBattler) >> 1)) = i;
                     BtlController_EmitTwoReturnValues(1, B_ACTION_SWITCH, 0);
