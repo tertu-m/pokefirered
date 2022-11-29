@@ -14,7 +14,6 @@ u32 Random32(void);
 // Burns a random number if the RNG isn't currently in use.
 void BurnRandomNumber(void);
 
-
 // Generates a random number in a range from 0 to x-1.
 // This approach is very fast but will be biased if x is not a power of 2 and
 // should be used with caution.
@@ -26,7 +25,7 @@ void BurnRandomNumber(void);
 // The same but arguments between 1 and 32 are valid.
 #define RandomBits32(x) (Random32() >> (32-(x)))
 
-#define RandomBool() (Random32() >> 31)
+#define RandomBool() ((bool8)(Random32() >> 31))
 
 // The number 1103515245 comes from the example implementation of rand and srand
 // in the ISO C standard.
@@ -39,12 +38,12 @@ void BootSeedRng(void);
 
 void StartSeedTimer(void);
 
-extern inline __attribute__((const)) const u16 CountLeadingZeroes(const u32 value);
+extern CONST_INLINE const u16 CountLeadingZeroes(const u32 value);
 
 // Generates a random number in a range from 0 to x-1.
 // This approach is slower but adds no additional bias.
-extern inline u16 RandomRangeGood(const u16 range);
+extern INLINE u16 RandomRangeGood(const u16 range);
 
-extern inline u16 RandomPercentageGood();
+extern INLINE u16 RandomPercentageGood();
 
 #endif // GUARD_RANDOM_H

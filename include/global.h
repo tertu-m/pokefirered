@@ -86,6 +86,17 @@
 #define SAFE_DIV(a, b) ((a) / (b))
 #endif
 
+// agbcc defaults to gnu_inline semantics and does not allow modern C inline
+// semantics where they differ. Modern gcc also supports gnu_inline semantics,
+// so just use gnu_inline and tell modern gcc that's what is needed.
+#if MODERN
+#define CONST_INLINE inline __attribute__((const,gnu_inline))
+#define INLINE inline __attribute__((gnu_inline))
+#else
+#define CONST_INLINE inline __attribute__((const))
+#define INLINE inline
+#endif
+
 // Extracts the upper 16 bits of a 32-bit number
 #define HIHALF(n) (((n) & 0xFFFF0000) >> 16)
 

@@ -1,39 +1,23 @@
-# Pokémon FireRed and LeafGreen
+# Pokémon FireRed and LeafGreen with SFC32 random number generator
 
-[![Build Status][travis-badge]][travis]
+This is a disassembly of Pokémon FireRed and LeafGreen with the original random number generator replaced with the SFC32 random number generator and with additional random number generation functions, which the code has been modified to use. The code compiles under both the agbcc and devkitPRO compilers.
 
-[travis]: https://travis-ci.org/pret/pokefirered
-[travis-badge]: https://travis-ci.org/pret/pokefirered.svg?branch=master
+## New functions and macros
+* `void BootSeedRng(void)`: Handles RNG state initialization. You must call `StartSeedTimer()` first for it to work properly.
+* `void BurnRandomNumber(void)`: Advances the RNG state if some other piece of code is not currently using it. Used in VBlank callbacks to prevent potential data corruption.
+* `u16 CountLeadingZeroes(u32 x)`: Returns the number of leading zeroes in `x` using a de Bruijin algorithm derived from Wikipedia. If `x` is 0, returns 0. Used by `RandomRangeGood`.
+* `u16 RandomBits(u32 n)`: A macro that returns a `u32` containing `n` unbiased random bits. Used wherever a fixed number of bits was called for.
+* `bool8 RandomBool()`: A macro that returns a random unbiased `bool8`. Used for random conditions.
+* `u16 RandomRangeFast(u16 n)`: A macro that returns a number from 0 to `n` using a fast but biased method. Used in code that does not affect game mechanics (i.e. code whose results are only visual).
+* `u16 RandomRangeGood(u16 n)`: A function that returns a number from 0 to `n` using a slower but unbiased method. Used in code that affects game mechanics.
+* `u16 RandomPercentageGood()`: A function that returns an unbiased random number from 0 to 99. This is used where `RandomRangeGood(100)` would have been used, as it seems like that is done pretty often.
+* `void StartSeedTimer(void)`: Starts a hardware timer that is used by `BootSeedRng()`.
 
-This is a disassembly of Pokémon FireRed and LeafGreen.
+## Removed functions
+* `u16 WildEncounterRandom()`: The separate wild encounter RNG no longer exists.
+* `void SeedRng(u16 seed)`: It should not be necessary to reseed the RNG typically, and `BootSeedRng()` handles gathering data for you.
+* `void SeedWildEncounterRng(u16 seed)`: The separate wild encounter RNG no longer exists.
+* `void StartTimer1(void)`: Call `StartSeedTimer()` instead.
 
-It builds the following ROMs:
-
-* [**pokefirered.gba**](https://datomatic.no-intro.org/?page=show_record&s=23&n=1616) `sha1: 41cb23d8dccc8ebd7c649cd8fbb58eeace6e2fdc`
-* [**pokeleafgreen.gba**](https://datomatic.no-intro.org/?page=show_record&s=23&n=1617) `sha1: 574fa542ffebb14be69902d1d36f1ec0a4afd71e`
-* [**pokefirered_rev1.gba**](https://datomatic.no-intro.org/?page=show_record&s=23&n=1672) `sha1: dd5945db9b930750cb39d00c84da8571feebf417`
-* [**pokeleafgreen_rev1.gba**](https://datomatic.no-intro.org/index.php?page=show_record&s=23&n=1668) `sha1: 7862c67bdecbe21d1d69ce082ce34327e1c6ed5e`
-
-To set up the repository, see [INSTALL.md](INSTALL.md).
-
-
-## See also
-
-Other disassembly and/or decompilation projects:
-* [**Pokémon Red and Blue**](https://github.com/pret/pokered)
-* [**Pokémon Gold and Silver (Space World '97 demo)**](https://github.com/pret/pokegold-spaceworld)
-* [**Pokémon Yellow**](https://github.com/pret/pokeyellow)
-* [**Pokémon Trading Card Game**](https://github.com/pret/poketcg)
-* [**Pokémon Pinball**](https://github.com/pret/pokepinball)
-* [**Pokémon Stadium**](https://github.com/pret/pokestadium)
-* [**Pokémon Gold and Silver**](https://github.com/pret/pokegold)
-* [**Pokémon Crystal**](https://github.com/pret/pokecrystal)
-* [**Pokémon Ruby and Sapphire**](https://github.com/pret/pokeruby)
-* [**Pokémon Pinball: Ruby & Sapphire**](https://github.com/pret/pokepinballrs)
-* [**Pokémon Emerald**](https://github.com/pret/pokeemerald)
-* [**Pokémon Mystery Dungeon: Red Rescue Team**](https://github.com/pret/pmd-red)
-
-
-## Contacts
-
-You can find us on [Discord](https://discord.gg/d5dubZ3) and [IRC](https://web.libera.chat/?#pret).
+## Other changes
+* `Random32()` is now a function rather than a macro, as SFC32 outputs 32 bits at a time.
