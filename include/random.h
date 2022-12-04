@@ -5,11 +5,19 @@
 
 extern const u16 clz_Lookup[];
 
-//Returns a 16-bit pseudorandom number
-u16 Random(void);
-
 //Returns a 32-bit pseudorandom number
 u32 Random32(void);
+
+// Returns x random bits, where x is a number between 1 and 16.
+// You can pass arguments up to 32, but don't do that.
+#define RandomBits(x) ((u16)(Random32() >> (32-(x))))
+// The same but arguments between 1 and 32 are valid.
+#define RandomBits32(x) (Random32() >> (32-(x)))
+
+//Returns a 16-bit pseudorandom number
+inline u16 Random(void) {
+    return RandomBits(16);
+}
 
 // Burns a random number if the RNG isn't currently in use.
 void BurnRandomNumber(void);
@@ -18,12 +26,6 @@ void BurnRandomNumber(void);
 // This approach is very fast but will be biased if x is not a power of 2 and
 // should be used with caution.
 #define RandomRangeFast(x) ((u16)(((u32)Random()*(u32)(x)) >> 16))
-
-// Returns x random bits, where x is a number between 1 and 16.
-// You can pass arguments up to 32, but don't do that.
-#define RandomBits(x) ((u16)(Random32() >> (32-(x))))
-// The same but arguments between 1 and 32 are valid.
-#define RandomBits32(x) (Random32() >> (32-(x)))
 
 #define RandomBool() ((bool8)(Random32() >> 31))
 
@@ -38,12 +40,16 @@ void BootSeedRng(void);
 
 void StartSeedTimer(void);
 
-extern CONST_INLINE const u16 CountLeadingZeroes(const u32 value);
+#if MODERN
+#define RANDOM_IMPL_SPECIFIER(X) extern inline __attribute__((gnu_inline,X))
+#else
+#define RANDOM_IMPL_SPECIFIER(X) extern inline __attribute__((X))
+#endif
 
-// Generates a random number in a range from 0 to x-1.
-// This approach is slower but adds no additional bias.
-extern INLINE u16 RandomRangeGood(const u16 range);
+#include "_random_impl.h"
 
-extern INLINE u16 RandomPercentageGood();
+inline u16 RandomPercentageGood() {
+    return RandomRangeGood(100);
+}
 
 #endif // GUARD_RANDOM_H

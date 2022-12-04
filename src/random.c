@@ -47,11 +47,6 @@ u32 Random32(void) {
     return result;
 }
 
-u16 Random(void)
-{
-    return Random32() >> 16;
-}
-
 const u16 clz_Lookup[] = {31, 22, 30, 21, 18, 10, 29, 2, 20, 17, 15, 13, 9,
     6, 28, 1, 23, 19, 11, 3, 16, 14, 7, 24, 12, 4, 8, 25, 5, 26, 27, 0};
 
@@ -88,42 +83,5 @@ void StartSeedTimer(void)
     REG_TM2CNT_H = 0x82;
 }
 
-__attribute__((const)) const u16 CountLeadingZeroes(const u32 value)
-{
-    u32 modified_value;
-
-    if (value == 0)
-        return 0;
-
-    modified_value = value | (value >> 1);
-    modified_value |= modified_value >> 2;
-    modified_value |= modified_value >> 4;
-    modified_value |= modified_value >> 8;
-    modified_value |= modified_value >> 16;
-
-    return clz_Lookup[(modified_value * 0x07C4ACDDU) >> 27];
-}
-
-
-u16 RandomRangeGood(const u16 range)
-{
-    u32 mask, candidate;
-    u16 adjusted_range;
-
-    if (range == 0)
-        return 0;
-
-    adjusted_range = range - 1;
-    mask = ~0U;
-    mask >>= CountLeadingZeroes((u32)range);
-    do {
-        candidate = Random32() & mask;
-    } while (candidate > adjusted_range);
-
-    return candidate;
-}
-
-u16 RandomPercentageGood()
-{
-    return RandomRangeGood(100);
-}
+#define RANDOM_IMPL_SPECIFIER(X) __attribute__((X))
+#include "_random_impl.h"
