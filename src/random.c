@@ -83,5 +83,6 @@ void StartSeedTimer(void)
     REG_TM2CNT_H = 0x82;
 }
 
-#define RANDOM_IMPL_SPECIFIER(X) __attribute__((X))
+#define RANDOM_IMPL_NONCONST
+#define RANDOM_IMPL_CONST __attribute__((const))
 #include "_random_impl.h"

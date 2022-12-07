@@ -1,10 +1,10 @@
 // DO NOT INCLUDE THIS FILE DIRECTLY!!
 
-#ifndef RANDOM_IMPL_SPECIFIER
+#if !defined(RANDOM_IMPL_CONST) || !defined(RANDOM_IMPL_NONCONST)
 #error _random_impl.h was included incorrectly.
 #endif
 
-RANDOM_IMPL_SPECIFIER(const) const u16 CountLeadingZeroes(const u32 value)
+RANDOM_IMPL_CONST const u16 CountLeadingZeroes(const u32 value)
 {
     u32 modified_value;
 
@@ -21,7 +21,7 @@ RANDOM_IMPL_SPECIFIER(const) const u16 CountLeadingZeroes(const u32 value)
 }
 
 
-RANDOM_IMPL_SPECIFIER() u16 RandomRangeGood(const u16 range)
+RANDOM_IMPL_NONCONST u16 RandomRangeGood(const u16 range)
 {
     u32 mask, candidate;
     u16 adjusted_range;
@@ -39,4 +39,5 @@ RANDOM_IMPL_SPECIFIER() u16 RandomRangeGood(const u16 range)
     return candidate;
 }
 
-#undef RANDOM_IMPL_SPECIFIER
+#undef RANDOM_IMPL_CONST
+#undef RANDOM_IMPL_NONCONST

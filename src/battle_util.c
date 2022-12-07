@@ -411,7 +411,7 @@ bool8 AreAllMovesUnusable(void)
         gProtectStructs[gActiveBattler].noValidMoves = TRUE;
         gSelectionBattleScripts[gActiveBattler] = BattleScript_NoMovesLeft;
         if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
-            gBattleBufferB[gActiveBattler][3] = GetBattlerAtPosition((BATTLE_OPPOSITE(GetBattlerPosition(gActiveBattler))) | (Random() & 2);
+            gBattleBufferB[gActiveBattler][3] = GetBattlerAtPosition((BATTLE_OPPOSITE(GetBattlerPosition(gActiveBattler))) | (Random() & 2));
         else
             gBattleBufferB[gActiveBattler][3] = GetBattlerAtPosition(BATTLE_OPPOSITE(GetBattlerPosition(gActiveBattler)));
     }
@@ -2239,7 +2239,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                         if (gBattleMons[target1].ability != ABILITY_NONE && gBattleMons[target1].hp != 0
                          && gBattleMons[target2].ability != ABILITY_NONE && gBattleMons[target2].hp != 0)
                         {
-                            gActiveBattler = GetBattlerAtPosition(((RandomBits(1) * 2) | side);
+                            gActiveBattler = GetBattlerAtPosition((RandomBits(1) * 2) | side);
                             gBattleMons[i].ability = gBattleMons[gActiveBattler].ability;
                             gLastUsedAbility = gBattleMons[gActiveBattler].ability;
                             effect++;

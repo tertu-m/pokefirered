@@ -41,9 +41,11 @@ void BootSeedRng(void);
 void StartSeedTimer(void);
 
 #if MODERN
-#define RANDOM_IMPL_SPECIFIER(X) extern inline __attribute__((gnu_inline,X))
+#define RANDOM_IMPL_NONCONST extern inline __attribute__((gnu_inline))
+#define RANDOM_IMPL_CONST extern inline __attribute__((const,gnu_inline))
 #else
-#define RANDOM_IMPL_SPECIFIER(X) extern inline __attribute__((X))
+#define RANDOM_IMPL_NONCONST extern inline
+#define RANDOM_IMPL_CONST extern inline __attribute__((const))
 #endif
 
 #include "_random_impl.h"
