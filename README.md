@@ -6,7 +6,7 @@ This is a disassembly of Pokémon FireRed and LeafGreen with the original random
 * `void BootSeedRng(void)`: Handles RNG state initialization. You must call `StartSeedTimer()` first for it to work properly.
 * `void BurnRandomNumber(void)`: Advances the RNG state if some other piece of code is not currently using it. Used in VBlank callbacks to prevent potential data corruption.
 * `u16 CountLeadingZeroes(u32 x)`: Returns the number of leading zeroes in `x` using a de Bruijin algorithm derived from Wikipedia. If `x` is 0, returns 0. Used by `RandomRangeGood`.
-* `u16 RandomBits(u32 n)`: A macro that returns a `u32` containing `n` unbiased random bits. Used wherever a fixed number of bits was called for.
+* `u16 RandomBits(u32 n)`: A macro that returns a `u16` containing `n` unbiased random bits. Used wherever a fixed number of bits was called for.
 * `bool8 RandomBool()`: A macro that returns a random unbiased `bool8`. Used for random conditions.
 * `u16 RandomRangeFast(u16 n)`: A macro that returns a number from 0 to `n` using a fast but biased method. Used in code that does not affect game mechanics (i.e. code whose results are only visual).
 * `u16 RandomRangeGood(u16 n)`: A function that returns a number from 0 to `n` using a slower but unbiased method. Used in code that affects game mechanics.

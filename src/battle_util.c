@@ -411,7 +411,7 @@ bool8 AreAllMovesUnusable(void)
         gProtectStructs[gActiveBattler].noValidMoves = TRUE;
         gSelectionBattleScripts[gActiveBattler] = BattleScript_NoMovesLeft;
         if (gBattleTypeFlags & BATTLE_TYPE_DOUBLE)
-            gBattleBufferB[gActiveBattler][3] = GetBattlerAtPosition((BATTLE_OPPOSITE(GetBattlerPosition(gActiveBattler))) | RandomBits(1));
+            gBattleBufferB[gActiveBattler][3] = GetBattlerAtPosition((BATTLE_OPPOSITE(GetBattlerPosition(gActiveBattler))) | (Random() & 2);
         else
             gBattleBufferB[gActiveBattler][3] = GetBattlerAtPosition(BATTLE_OPPOSITE(GetBattlerPosition(gActiveBattler)));
     }
@@ -2002,11 +2002,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                  && (gBattleMoves[move].flags & FLAG_MAKES_CONTACT)
                  && RandomRangeGood(10) == 0)
                 {
-                    // XXX: doing rejection sampling to get a value between 1 and 2
-                    do
-                    {
-                        gBattleCommunication[MOVE_EFFECT_BYTE] = RandomBits(2);
-                    } while (gBattleCommunication[MOVE_EFFECT_BYTE] == 0);
+                    gBattleCommunication[MOVE_EFFECT_BYTE] = RandomRangeGood(3) + 1;
 
                     if (gBattleCommunication[MOVE_EFFECT_BYTE] == MOVE_EFFECT_BURN)
                         gBattleCommunication[MOVE_EFFECT_BYTE] += 2; // 5 MOVE_EFFECT_PARALYSIS
@@ -2243,7 +2239,7 @@ u8 AbilityBattleEffects(u8 caseID, u8 battler, u8 ability, u8 special, u16 moveA
                         if (gBattleMons[target1].ability != ABILITY_NONE && gBattleMons[target1].hp != 0
                          && gBattleMons[target2].ability != ABILITY_NONE && gBattleMons[target2].hp != 0)
                         {
-                            gActiveBattler = GetBattlerAtPosition(((RandomBool()) * 2) | side);
+                            gActiveBattler = GetBattlerAtPosition(((RandomBits(1) * 2) | side);
                             gBattleMons[i].ability = gBattleMons[gActiveBattler].ability;
                             gLastUsedAbility = gBattleMons[gActiveBattler].ability;
                             effect++;
@@ -3143,7 +3139,6 @@ static bool32 IsMonEventLegal(u8 battlerId)
 
 u8 IsMonDisobedient(void)
 {
-    s32 rnd;
     s32 calc;
     u8 obedienceLevel = 0;
 
@@ -3171,9 +3166,8 @@ u8 IsMonDisobedient(void)
 
     if (gBattleMons[gBattlerAttacker].level <= obedienceLevel)
         return 0;
-    // XXX: another RandomRangeFast style calculation
-    rnd = (Random() & 255);
-    calc = (gBattleMons[gBattlerAttacker].level + obedienceLevel) * rnd >> 8;
+
+    calc = RandomRangeGood(gBattleMons[gBattlerAttacker].level + obedienceLevel);
     if (calc < obedienceLevel)
         return 0;
 
@@ -3186,9 +3180,7 @@ u8 IsMonDisobedient(void)
         return 1;
     }
 
-    // XXX: RandomRangeFast
-    rnd = (Random() & 255);
-    calc = (gBattleMons[gBattlerAttacker].level + obedienceLevel) * rnd >> 8;
+    calc = RandomRangeGood(gBattleMons[gBattlerAttacker].level + obedienceLevel);
     if (calc < obedienceLevel && gCurrentMove != MOVE_FOCUS_PUNCH) // Additional check for focus punch in FR
     {
         calc = CheckMoveLimitations(gBattlerAttacker, gBitTable[gCurrMovePos], MOVE_LIMITATIONS_ALL);
@@ -3202,10 +3194,9 @@ u8 IsMonDisobedient(void)
         }
         else // use a random move
         {
-            // XXX: rejection sampling
             do
             {
-                gCurrMovePos = gChosenMovePos = Random() & (MAX_MON_MOVES - 1);
+                gCurrMovePos = gChosenMovePos = RandomRangeGood(MAX_MON_MOVES);
             } while (gBitTable[gCurrMovePos] & calc);
 
             gCalledMove = gBattleMons[gBattlerAttacker].moves[gCurrMovePos];

@@ -2671,7 +2671,7 @@ u8 GetDefaultMoveTarget(u8 battlerId)
     {
         u8 position;
 
-        if ((RandomBool()) == 0)
+        if (RandomBool())
             position = BATTLE_PARTNER(opposing);
         else
             position = opposing;

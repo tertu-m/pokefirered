@@ -348,7 +348,7 @@ void ChooseNextBattleTowerTrainer(void)
             do
             {
                 // XXX: I don't understand this code yet
-                trainerId = ((Random() & 0xFF) * 5) >> 7;
+                trainerId = (RandomBits(8) * 5) >> 7;
                 trainerId += (gSaveBlock2Ptr->battleTower.curStreakChallengesNum[levelType] - 1) * 10 + 20;
 
                 // Ensure trainer wasn't previously fought in this challenge.

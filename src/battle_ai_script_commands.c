@@ -1729,7 +1729,7 @@ static void Cmd_if_random_safari_flee(void)
     else
         safariFleeRate = gBattleStruct->safariEscapeFactor;
     safariFleeRate *= 5;
-    if ((u8)(RandomRangeGood(100)) < safariFleeRate)
+    if ((u8)(RandomPercentageGood()) < safariFleeRate)
         sAIScriptPtr = T1_READ_PTR(sAIScriptPtr + 1);
     else
         sAIScriptPtr += 5;

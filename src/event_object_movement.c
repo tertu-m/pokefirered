@@ -3247,7 +3247,7 @@ static bool8 MovementType_FaceDownAndUp_Step2(struct ObjectEvent *objectEvent, s
 {
     if (ObjectEventExecSingleMovementAction(objectEvent, sprite))
     {
-        SetMovementDelay(sprite, gMovementDelaysMedium[RandomBits(3)]);
+        SetMovementDelay(sprite, gMovementDelaysMedium[RandomBits(2)]);
         objectEvent->singleMovementActive = FALSE;
         sprite->data[1] = 3;
     }
