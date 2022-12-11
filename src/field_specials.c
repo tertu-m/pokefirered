@@ -713,7 +713,7 @@ static u16 SampleResortGorgeousReward(void)
     if (RandomPercentageGood() >= 30)
         return ITEM_LUXURY_BALL;
     else
-        return sResortGorgeousDeluxeRewards[Random() % NELEMS(sResortGorgeousDeluxeRewards)];
+        return sResortGorgeousDeluxeRewards[RandomRangeGood(NELEMS(sResortGorgeousDeluxeRewards))];
 }
 
 bool8 CheckAddCoins(void)

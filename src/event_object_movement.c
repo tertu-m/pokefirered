@@ -3105,7 +3105,7 @@ static bool8 MovementType_WanderUpAndDown_Step4(struct ObjectEvent *objectEvent,
     u8 direction;
     u8 directions[2];
     memcpy(directions, gUpAndDownDirections, sizeof directions);
-    direction = directions[RandomBool()];
+    direction = directions[RandomBits(1)];
     SetObjectEventDirection(objectEvent, direction);
     sprite->data[1] = 5;
     if (GetCollisionInDirection(objectEvent, direction))
@@ -3174,7 +3174,7 @@ static bool8 MovementType_WanderLeftAndRight_Step4(struct ObjectEvent *objectEve
     u8 direction;
     u8 directions[2];
     memcpy(directions, gLeftAndRightDirections, sizeof directions);
-    direction = directions[RandomBool()];
+    direction = directions[RandomBits(1)];
     SetObjectEventDirection(objectEvent, direction);
     sprite->data[1] = 5;
     if (GetCollisionInDirection(objectEvent, direction))
@@ -3272,7 +3272,7 @@ static bool8 MovementType_FaceDownAndUp_Step4(struct ObjectEvent *objectEvent, s
     direction = TryGetTrainerEncounterDirection(objectEvent, RUNFOLLOW_NORTH_SOUTH);
     if (direction == DIR_NONE)
     {
-        direction = directions[RandomBool()];
+        direction = directions[RandomBits(1)];
     }
     SetObjectEventDirection(objectEvent, direction);
     sprite->data[1] = 1;
@@ -3324,7 +3324,7 @@ static bool8 MovementType_FaceLeftAndRight_Step4(struct ObjectEvent *objectEvent
     direction = TryGetTrainerEncounterDirection(objectEvent, RUNFOLLOW_EAST_WEST);
     if (direction == DIR_NONE)
     {
-        direction = directions[RandomBool()];
+        direction = directions[RandomBits(1)];
     }
     SetObjectEventDirection(objectEvent, direction);
     sprite->data[1] = 1;
@@ -3376,7 +3376,7 @@ static bool8 MovementType_FaceUpAndLeft_Step4(struct ObjectEvent *objectEvent, s
     direction = TryGetTrainerEncounterDirection(objectEvent, RUNFOLLOW_NORTH_WEST);
     if (direction == DIR_NONE)
     {
-        direction = directions[RandomBool()];
+        direction = directions[RandomBits(1)];
     }
     SetObjectEventDirection(objectEvent, direction);
     sprite->data[1] = 1;
@@ -3428,7 +3428,7 @@ static bool8 MovementType_FaceUpAndRight_Step4(struct ObjectEvent *objectEvent, 
     direction = TryGetTrainerEncounterDirection(objectEvent, RUNFOLLOW_NORTH_EAST);
     if (direction == DIR_NONE)
     {
-        direction = directions[RandomBool()];
+        direction = directions[RandomBits(1)];
     }
     SetObjectEventDirection(objectEvent, direction);
     sprite->data[1] = 1;
@@ -3480,7 +3480,7 @@ static bool8 MovementType_FaceDownAndLeft_Step4(struct ObjectEvent *objectEvent,
     direction = TryGetTrainerEncounterDirection(objectEvent, RUNFOLLOW_SOUTH_WEST);
     if (direction == DIR_NONE)
     {
-        direction = directions[RandomBool()];
+        direction = directions[RandomBits(1)];
     }
     SetObjectEventDirection(objectEvent, direction);
     sprite->data[1] = 1;
@@ -3532,7 +3532,7 @@ static bool8 MovementType_FaceDownAndRight_Step4(struct ObjectEvent *objectEvent
     direction = TryGetTrainerEncounterDirection(objectEvent, RUNFOLLOW_SOUTH_EAST);
     if (direction == DIR_NONE)
     {
-        direction = directions[RandomBool()];
+        direction = directions[RandomBits(1)];
     }
     SetObjectEventDirection(objectEvent, direction);
     sprite->data[1] = 1;

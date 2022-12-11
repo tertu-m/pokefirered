@@ -14,11 +14,6 @@ u32 Random32(void);
 // The same but arguments between 1 and 32 are valid.
 #define RandomBits32(x) (Random32() >> (32-(x)))
 
-//Returns a 16-bit pseudorandom number
-inline u16 Random(void) {
-    return RandomBits(16);
-}
-
 // Burns a random number if the RNG isn't currently in use.
 void BurnRandomNumber(void);
 
@@ -49,9 +44,5 @@ void StartSeedTimer(void);
 #endif
 
 #include "_random_impl.h"
-
-inline u16 RandomPercentageGood() {
-    return RandomRangeGood(100);
-}
 
 #endif // GUARD_RANDOM_H

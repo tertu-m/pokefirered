@@ -39,5 +39,15 @@ RANDOM_IMPL_NONCONST u16 RandomRangeGood(const u16 range)
     return candidate;
 }
 
+RANDOM_IMPL_NONCONST u16 RandomPercentageGood() {
+    return RandomRangeGood(100);
+}
+
+//Returns a 16-bit pseudorandom number
+RANDOM_IMPL_NONCONST u16 Random(void) {
+    return RandomBits(16);
+}
+
+
 #undef RANDOM_IMPL_CONST
 #undef RANDOM_IMPL_NONCONST
