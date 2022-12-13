@@ -15,7 +15,8 @@ This is a disassembly of Pokémon FireRed and LeafGreen with the original random
 * `void StartSeedTimer(void)`: Starts a hardware timer that is used by `BootSeedRng()`.
 
 ## `RandomRangeFast` versus `RandomRangeGood`
-`RandomRangeFast` works a lot like the `Random() % n` technique currently used throughout the game; given a perfect RNG source, it will not actually choose every number in the range with the same probability, but is faster than `RandomRangeGood` because it will only ever do one RNG call. It is almost always faster than `Random() % n` because the Game Boy Advance does division using a very slow software routine.
+`RandomRangeFast` works a lot like the `Random() % n` technique currently used throughout the game; given a perfect RNG source, it will not actually choose every number in the range with the same probability, but is faster than `RandomRangeGood` because it will only ever do one RNG call. It is almost always substantially faster than `Random() % n` because the Game Boy Advance does division using a very slow software routine.
+
 `RandomRangeGood`, on the other hand, can make as many RNG calls as it needs to ensure that the generated number is not biased, but usually takes less than 4. Even so, this method will usually be faster than `Random() % n` where n is not a constant value because software division is just that slow.
 
 ## Suggested changes
