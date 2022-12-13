@@ -3,15 +3,26 @@
 
 #include "global.h"
 
-extern u32 gRngValue;
-extern u32 gRng2Value;
-
-//Returns a 16-bit pseudorandom number
-u16 Random(void);
-u16 Random2(void);
+extern const u16 clz_Lookup[];
 
 //Returns a 32-bit pseudorandom number
-#define Random32() (Random() | (Random() << 16))
+u32 Random32(void);
+
+// Returns x random bits, where x is a number between 1 and 16.
+// You can pass arguments up to 32, but don't do that.
+#define RandomBits(x) ((u16)(Random32() >> (32-(x))))
+// The same but arguments between 1 and 32 are valid.
+#define RandomBits32(x) (Random32() >> (32-(x)))
+
+// Burns a random number if the RNG isn't currently in use.
+void BurnRandomNumber(void);
+
+// Generates a random number in a range from 0 to x-1.
+// This approach is very fast but will be biased if x is not a power of 2 and
+// should be used with caution.
+#define RandomRangeFast(x) ((u16)(((u32)Random()*(u32)(x)) >> 16))
+
+#define RandomBool() ((bool8)(Random32() >> 31))
 
 // The number 1103515245 comes from the example implementation of rand and srand
 // in the ISO C standard.
@@ -20,7 +31,18 @@ u16 Random2(void);
 #define ISO_RANDOMIZE2(val)(RAND_MULT * (val) + 12345)
 
 //Sets the initial seed value of the pseudorandom number generator
-void SeedRng(u16 seed);
-void SeedRng2(u16 seed);
+void BootSeedRng(void);
+
+void StartSeedTimer(void);
+
+#if MODERN
+#define RANDOM_IMPL_NONCONST extern inline __attribute__((gnu_inline))
+#define RANDOM_IMPL_CONST extern inline __attribute__((const,gnu_inline))
+#else
+#define RANDOM_IMPL_NONCONST extern inline
+#define RANDOM_IMPL_CONST extern inline __attribute__((const))
+#endif
+
+#include "_random_impl.h"
 
 #endif // GUARD_RANDOM_H

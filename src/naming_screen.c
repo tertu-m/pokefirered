@@ -16,6 +16,7 @@
 #include "new_menu_helpers.h"
 #include "pokemon_icon.h"
 #include "pokemon_storage_system.h"
+#include "random.h"
 #include "strings.h"
 #include "task.h"
 #include "text_window.h"
@@ -424,7 +425,7 @@ void DoNamingScreen(u8 templateNum, u8 *destBuffer, u16 monSpecies, u16 monGende
         sNamingScreen->returnCallback = returnCallback;
 
         if (templateNum == NAMING_SCREEN_PLAYER)
-            StartTimer1();
+            StartSeedTimer();
 
         SetMainCallback2(CB2_LoadNamingScreen);
     }

@@ -8,7 +8,6 @@
 	.include "link.o"
 	.align 4
 	.include "battle_main.o"
-	.include "random.o"
 	.include "load_save.o"
 	.include "overworld.o"
 	.align 4

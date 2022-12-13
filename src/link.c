@@ -286,7 +286,7 @@ static void LinkTestScreen(void)
     ResetBlockSend();
     gLinkType = LINKTYPE_TRADE;
     OpenLink();
-    SeedRng(gMain.vblankCounter2);
+    // SeedRng(gMain.vblankCounter2);
     for (i = 0; i < TRAINER_ID_LENGTH; i++)
         gSaveBlock2Ptr->playerTrainerId[i] = Random() % 256;
 
@@ -1192,7 +1192,7 @@ void CheckLinkPlayersMatchSaved(void)
 
     for (i = 0; i < gSavedLinkPlayerCount; i++)
     {
-        if (gSavedLinkPlayers[i].trainerId != gLinkPlayers[i].trainerId 
+        if (gSavedLinkPlayers[i].trainerId != gLinkPlayers[i].trainerId
          || StringCompare(gSavedLinkPlayers[i].name, gLinkPlayers[i].name) != 0)
         {
             gLinkErrorOccurred = TRUE;

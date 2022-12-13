@@ -231,17 +231,11 @@ void SetMainCallback2(MainCallback callback)
     gMain.state = 0;
 }
 
-void StartTimer1(void)
-{
-    REG_TM1CNT_H = 0x80;
-}
 
 void SeedRngAndSetTrainerId(void)
 {
-    u16 val = REG_TM1CNT_L;
-    SeedRng(val);
-    REG_TM1CNT_H = 0;
-    gTrainerId = val;
+    BootSeedRng();
+    gTrainerId = Random();
 }
 
 u16 GetGeneratedTrainerIdLower(void)
@@ -384,7 +378,7 @@ static void VBlankIntr(void)
 #endif
 
     TryReceiveLinkBattleData();
-    Random();
+    BurnRandomNumber();
     UpdateWirelessStatusIndicatorSprite();
 
     INTR_CHECK |= INTR_FLAG_VBLANK;

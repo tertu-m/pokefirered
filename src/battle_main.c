@@ -1643,7 +1643,7 @@ static void HBlankCB_Battle(void)
 void VBlankCB_Battle(void)
 {
     // Change gRngSeed every vblank.
-    Random();
+    BurnRandomNumber();
 
     SetGpuReg(REG_OFFSET_BG0HOFS, gBattle_BG0_X);
     SetGpuReg(REG_OFFSET_BG0VOFS, gBattle_BG0_Y);
