@@ -38,11 +38,50 @@ void StartSeedTimer(void);
 #if MODERN
 #define RANDOM_IMPL_NONCONST extern inline __attribute__((gnu_inline))
 #define RANDOM_IMPL_CONST extern inline __attribute__((const,gnu_inline))
+#define RANDOM_NONCONST extern inline __attribute__((gnu_inline))
 #else
 #define RANDOM_IMPL_NONCONST extern inline
 #define RANDOM_IMPL_CONST extern inline __attribute__((const))
+#define RANDOM_NONCONST extern inline
 #endif
 
+//Returns a 16-bit pseudorandom number
+RANDOM_NONCONST u16 Random(void) {
+    return RandomBits(16);
+}
+
+
+RANDOM_NONCONST u16 _RandomRangeGood_Multiply(const u16 range)
+{
+    u16 scaled_lower_half, smallest_lower_half, random;
+    u32 scaled_random;
+
+    if (range == 0) return 0;
+
+    // This lets us compute (UINT16_MAX+1) % range with 16-bit modulo.
+    // The compiler should optimize this out, but in case it doesn't...
+    smallest_lower_half = (u16)(~range+1) % range;
+    do {
+        random = Random();
+        scaled_random = (u32)random * (u32)range;
+        scaled_lower_half = (u16)scaled_random;
+    } while (scaled_lower_half < smallest_lower_half);
+
+    return (u16)(scaled_random >> 16);
+}
+
+RANDOM_NONCONST u16 RandomPercentageGood() {
+    return _RandomRangeGood_Multiply(100);
+}
+
 #include "_random_impl.h"
+
+// Taken from Linux. Devised by Martin Uecker.
+#define __is_constexpr(x) \
+    (sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
+
+#define RandomRangeGood(x) (__is_constexpr((x)) ? _RandomRangeGood_Multiply((x)) : _RandomRangeGood_Mask((x)))
+
+#undef RANDOM_NONCONST
 
 #endif // GUARD_RANDOM_H

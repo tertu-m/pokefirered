@@ -10,9 +10,11 @@ This is a disassembly of Pokémon FireRed and LeafGreen with the original random
 * `u32 RandomBits32(n)`: A macro that returns a `u32` containing `n` (0-32) unbiased random bits. Not used in this repository.
 * `bool8 RandomBool()`: A macro that returns a random unbiased `bool8`. Used for random conditions.
 * `u16 RandomRangeFast(u16 n)`: A macro that returns a number from 0 to `n` using a fast but biased method. Used in code that does not affect game mechanics (i.e. code whose results are only visual).
-* `u16 RandomRangeGood(u16 n)`: A function that returns a number from 0 to `n` using a slower but unbiased method. Used in code that affects game mechanics.
+* `u16 RandomRangeGood(u16 n)`: A macro that returns a number from 0 to `n` using slower but unbiased methods. Used in code that affects game mechanics.
 * `u16 RandomPercentageGood()`: A function that returns an unbiased random number from 0 to 99. This is used where `RandomRangeGood(100)` would have been used, as it seems like that is done pretty often.
 * `void StartSeedTimer(void)`: Starts a hardware timer that is used by `BootSeedRng()`.
+
+Functions starting with an _ are intended for internal use only.
 
 ## `RandomRangeFast` versus `RandomRangeGood`
 `RandomRangeFast()` works a lot like the original `Random() % n` technique formerly used throughout the game; given a perfect RNG source, it will not actually choose every number in the range with the same probability, but is faster because it will only ever do one RNG call. `RandomRangeGood()` can make as many RNG calls as it needs to ensure that the generated number is not biased, but usually takes less than 3.

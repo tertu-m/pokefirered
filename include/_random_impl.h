@@ -21,7 +21,7 @@ RANDOM_IMPL_CONST const u16 CountLeadingZeroes(const u32 value)
 }
 
 
-RANDOM_IMPL_NONCONST u16 RandomRangeGood(const u16 range)
+RANDOM_IMPL_NONCONST u16 _RandomRangeGood_Mask(const u16 range)
 {
     u32 mask, candidate;
     u16 adjusted_range;
@@ -37,15 +37,6 @@ RANDOM_IMPL_NONCONST u16 RandomRangeGood(const u16 range)
     } while (candidate > adjusted_range);
 
     return candidate;
-}
-
-RANDOM_IMPL_NONCONST u16 RandomPercentageGood() {
-    return RandomRangeGood(100);
-}
-
-//Returns a 16-bit pseudorandom number
-RANDOM_IMPL_NONCONST u16 Random(void) {
-    return RandomBits(16);
 }
 
 
