@@ -3,10 +3,44 @@
 
 #include "global.h"
 
-extern const u16 clz_Lookup[];
+struct RngState {
+    u32 a;
+    u32 b;
+    u32 c;
+    u32 counter;
+};
 
-//Returns a 32-bit pseudorandom number
-u32 Random32(void);
+enum RngStatus {
+    UNINITIALIZED,
+    IDLE,
+    BUSY
+};
+
+extern const u16 clz_Lookup[];
+extern struct RngState gRngState;
+extern enum RngStatus gRngStatus;
+
+#if MODERN
+#define RANDOM_IMPL_NONCONST extern inline __attribute__((gnu_inline))
+#define RANDOM_IMPL_CONST extern inline __attribute__((const,gnu_inline))
+#define RANDOM_NONCONST extern inline __attribute__((gnu_inline))
+#else
+#define RANDOM_IMPL_NONCONST extern inline
+#define RANDOM_IMPL_CONST extern inline __attribute__((const))
+#define RANDOM_NONCONST extern inline
+#endif
+
+RANDOM_NONCONST void _LockRng()
+{
+    gRngStatus = BUSY;
+}
+
+RANDOM_NONCONST void _UnlockRng()
+{
+    gRngStatus = IDLE;
+}
+
+#include "_random_impl.h"
 
 // Returns x random bits, where x is a number between 1 and 16.
 // You can pass arguments up to 32, but don't do that.
@@ -35,21 +69,10 @@ void BootSeedRng(void);
 
 void StartSeedTimer(void);
 
-#if MODERN
-#define RANDOM_IMPL_NONCONST extern inline __attribute__((gnu_inline))
-#define RANDOM_IMPL_CONST extern inline __attribute__((const,gnu_inline))
-#define RANDOM_NONCONST extern inline __attribute__((gnu_inline))
-#else
-#define RANDOM_IMPL_NONCONST extern inline
-#define RANDOM_IMPL_CONST extern inline __attribute__((const))
-#define RANDOM_NONCONST extern inline
-#endif
-
 //Returns a 16-bit pseudorandom number
 RANDOM_NONCONST u16 Random(void) {
     return RandomBits(16);
 }
-
 
 RANDOM_NONCONST u16 _RandomRangeGood_Multiply(const u16 range)
 {
@@ -61,20 +84,42 @@ RANDOM_NONCONST u16 _RandomRangeGood_Multiply(const u16 range)
     // This lets us compute (UINT16_MAX+1) % range with 16-bit modulo.
     // The compiler should optimize this out, but in case it doesn't...
     smallest_lower_half = (u16)(~range+1) % range;
+
+    _LockRng();
     do {
-        random = Random();
+        random = (u16)(_Random32_Unlocked() >> 16);
         scaled_random = (u32)random * (u32)range;
         scaled_lower_half = (u16)scaled_random;
     } while (scaled_lower_half < smallest_lower_half);
+    _UnlockRng();
 
     return (u16)(scaled_random >> 16);
+}
+
+RANDOM_IMPL_NONCONST u16 _RandomRangeGood_Mask(const u16 range)
+{
+    u32 mask, candidate;
+    u16 adjusted_range;
+
+    if (range == 0)
+        return 0;
+
+    adjusted_range = range - 1;
+    mask = ~0U;
+    mask >>= CountLeadingZeroes((u32)range);
+
+    _LockRng();
+    do {
+        candidate = _Random32_Unlocked() & mask;
+    } while (candidate > adjusted_range);
+    _UnlockRng();
+
+    return candidate;
 }
 
 RANDOM_NONCONST u16 RandomPercentageGood() {
     return _RandomRangeGood_Multiply(100);
 }
-
-#include "_random_impl.h"
 
 // Taken from Linux. Devised by Martin Uecker.
 #define __is_constexpr(x) \
