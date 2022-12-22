@@ -39,6 +39,5 @@ RANDOM_IMPL_NONCONST u16 _RandomRangeGood_Mask(const u16 range)
     return candidate;
 }
 
-
 #undef RANDOM_IMPL_CONST
 #undef RANDOM_IMPL_NONCONST

@@ -14,7 +14,10 @@ This is a disassembly of Pokémon FireRed and LeafGreen with the original random
 * `u16 RandomPercentageGood()`: A function that returns an unbiased random number from 0 to 99. This is used where `RandomRangeGood(100)` would have been used, as it seems like that is done pretty often.
 * `void StartSeedTimer(void)`: Starts a hardware timer that is used by `BootSeedRng()`.
 
-Functions starting with an _ are intended for internal use only.
+Functions and macros starting with an _ are intended for internal use only, the above functions should be used. Here is what they do anyway:
+* `_RandomRangeGood_Multiply`: Implements `RandomRangeGood` for cases where the argument is a constant.
+* `_RandomRangeGood_Bitmask`: Implements `RandomRangeGood` for cases where the argument is not a constant.
+* `__is_constexpr`: Used by `RandomRangeGood` to determine whether its argument is a constant or not.
 
 ## `RandomRangeFast` versus `RandomRangeGood`
 `RandomRangeFast()` works a lot like the original `Random() % n` technique formerly used throughout the game; given a perfect RNG source, it will not actually choose every number in the range with the same probability, but is faster because it will only ever do one RNG call. `RandomRangeGood()` can make as many RNG calls as it needs to ensure that the generated number is not biased, but usually takes less than 3.
