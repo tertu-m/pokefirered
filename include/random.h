@@ -96,7 +96,7 @@ RANDOM_NONCONST u16 _RandomRangeGood_Multiply(const u16 range)
     return (u16)(scaled_random >> 16);
 }
 
-RANDOM_IMPL_NONCONST u16 _RandomRangeGood_Mask(const u16 range)
+RANDOM_NONCONST u16 _RandomRangeGood_Mask(const u16 range)
 {
     u32 mask, candidate;
     u16 adjusted_range;
