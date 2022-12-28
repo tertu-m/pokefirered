@@ -747,7 +747,7 @@ static void _TriggerPendingDaycareEgg(struct DayCare *daycare)
 //        daycare->offspringPersonality = personality;
 //    }
 
-    daycare->offspringPersonality = ((Random()) % 0xFFFE) + 1;
+    daycare->offspringPersonality = RandomRangeGood(0xFFFE) + 1;
     FlagSet(FLAG_PENDING_DAYCARE_EGG);
 }
 
@@ -1149,7 +1149,7 @@ static bool8 TryProduceOrHatchEgg(struct DayCare *daycare)
     if (daycare->offspringPersonality == 0 && validEggs == DAYCARE_MON_COUNT && (daycare->mons[1].steps & 0xFF) == 0xFF)
     {
         u8 compatibility = GetDaycareCompatibilityScore(daycare);
-        if (compatibility > (Random() * 100u) / USHRT_MAX)
+        if (compatibility > RandomPercentageGood())
             TriggerPendingDaycareEgg();
     }
 

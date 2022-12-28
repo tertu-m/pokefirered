@@ -18,7 +18,7 @@ enum RngStatus {
 
 extern const u16 clz_Lookup[];
 extern struct RngState gRngState;
-extern volatile enum RngStatus gRngStatus;
+extern volatile enum RngStatus _gRngStatus;
 
 #if MODERN
 #define RANDOM_IMPL_NONCONST extern inline __attribute__((gnu_inline))
@@ -32,12 +32,12 @@ extern volatile enum RngStatus gRngStatus;
 
 RANDOM_NONCONST void _LockRng()
 {
-    gRngStatus = BUSY;
+    _gRngStatus = BUSY;
 }
 
 RANDOM_NONCONST void _UnlockRng()
 {
-    gRngStatus = IDLE;
+    _gRngStatus = IDLE;
 }
 
 #include "_random_impl.h"
@@ -82,7 +82,8 @@ RANDOM_NONCONST u16 _RandomRangeGood_Multiply(const u16 range)
     if (range == 0) return 0;
 
     // This lets us compute (UINT16_MAX+1) % range with 16-bit modulo.
-    // The compiler should optimize this out, but in case it doesn't...
+    // The compiler should optimize this out, but in case it doesn't, this will
+    // make the resulting code more efficient.
     smallest_lower_half = (u16)(~range+1) % range;
 
     _LockRng();

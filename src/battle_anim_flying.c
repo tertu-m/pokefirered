@@ -649,7 +649,7 @@ static void AnimFallingFeather_Step(struct Sprite *sprite)
     {
         switch (data->unk2 / 64)
         {
-        case 0: 
+        case 0:
             if ((u8)data->unk0_1 == 1) //casts to u8 here are necessary for matching
             {
                 data->unk0_0d = 1;
@@ -1167,8 +1167,8 @@ static void AnimDiveWaterSplash(struct Sprite *sprite)
 // Launches a water droplet away from the specified battler. Used by Astonish and Dive
 static void AnimSprayWaterDroplet(struct Sprite *sprite)
 {
-    s32 v1 = 0x1FF & Random();
-    s32 v2 = 0x7F & Random();
+    s32 v1 = RandomBits(9);
+    s32 v2 = RandomBits(7);
 
     if (v1 % 2)
         sprite->data[0] = 736 + v1;

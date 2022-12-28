@@ -2410,7 +2410,7 @@ void SetMoveEffect(bool8 primary, u8 certain)
                 }
                 else
                 {
-                    gBattleMons[gEffectBattler].status2 |= STATUS2_CONFUSION_TURN(((Random()) % 4) + 2); // 2-5 turns
+                    gBattleMons[gEffectBattler].status2 |= STATUS2_CONFUSION_TURN(RandomBits(2) + 2); // 2-5 turns
 
                     BattleScriptPush(gBattlescriptCurrInstr + 1);
                     gBattlescriptCurrInstr = sMoveEffectBS_Ptrs[gBattleCommunication[MOVE_EFFECT_BYTE]];
@@ -7890,7 +7890,7 @@ static void Cmd_trychoosesleeptalkmove(void)
 
         do
         {
-            movePosition = Random() & (MAX_MON_MOVES - 1);
+            movePosition = RandomRangeGood(MAX_MON_MOVES);
         } while ((gBitTable[movePosition] & unusableMovesBits));
 
         gCalledMove = gBattleMons[gBattlerAttacker].moves[movePosition];
