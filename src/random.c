@@ -7,14 +7,14 @@
 
 struct RngState gRngState;
 
-volatile enum RngStatus gRngStatus;
+volatile enum RngStatus _gRngStatus;
 
 #define RANDOM_IMPL_NONCONST
 #define RANDOM_IMPL_CONST __attribute__((const))
 #include "_random_impl.h"
 
 void BurnRandomNumber(void) {
-    if (gRngStatus == IDLE)
+    if (_gRngStatus == IDLE)
         Random32();
 }
 
@@ -24,7 +24,7 @@ const u16 clz_Lookup[] = {31, 22, 30, 21, 18, 10, 29, 2, 20, 17, 15, 13, 9,
 static void SeedRngInternal(u32 seed_c, u32 seed_b, u32 seed_a)
 {
     u32 i;
-    gRngStatus = UNINITIALIZED;
+    _gRngStatus = UNINITIALIZED;
 
     gRngState.c = seed_c;
     gRngState.b = seed_b;
@@ -34,7 +34,7 @@ static void SeedRngInternal(u32 seed_c, u32 seed_b, u32 seed_a)
     for (i = 0; i < 20; i++)
         _Random32_Unlocked();
 
-    gRngStatus = IDLE;
+    _gRngStatus = IDLE;
 }
 
 void BootSeedRng(void)
