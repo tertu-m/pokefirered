@@ -1845,44 +1845,122 @@ void CreateBoxMon(struct BoxPokemon *boxMon, u16 species, u8 level, u8 fixedIV, 
     GiveBoxMonInitialMoveset(boxMon);
 }
 
+// Gets the values that would be needed to force a particular gender byte
+// using a method of the form RandomRangeGood(limit) + base.
+// Effectively if base == 0 and limit == 255, that means it is not possible to
+// force a gender for this mon.
+static void GetMonGenderByteParameters(const u16 species, const u8 gender, u8 *base, u8 *limit)
+{
+    u8 speciesGender;
+    *base = 0;
+    *limit = 0xFF;
+
+    // If you want a genderless mon, you will either always or never get one.
+    if (gender == MON_GENDERLESS)
+        return;
+
+    speciesGender = gBaseStats[species].genderRatio;
+    // Check if it's impossible to force a different gender for this mon.
+    switch (speciesGender) {
+        case MON_MALE:
+        case MON_FEMALE:
+        case MON_GENDERLESS:
+            return;
+    }
+
+    // Now we know this task is possible.
+    if (gender == MON_FEMALE) {
+        *base = 0;
+        *limit = speciesGender;
+    } else {
+        *base = speciesGender;
+        *limit = 0xFF - speciesGender + 1;
+    }
+}
+
+static u32 GeneratePersonalityByNature(u8 nature)
+{
+    u32 personality_base;
+    u32 limit;
+
+    limit = UINT32_MAX / 25;
+    // If we get too close to UINT32_MAX, not every nature will fit anymore.
+    if (nature > UINT32_MAX-(UINT32_MAX/25)*25)
+        limit--;
+
+    _LockRng();
+    do {
+        personality_base = _Random32_Unlocked() >> 4;
+    } while(personality_base > limit);
+    _UnlockRng();
+
+    return personality_base * 25 + nature;
+}
+
+u32 GenerateUnownPersonalityByLetter(u8 letter)
+{
+    // How this works now:
+    // Generate the 8 bits of Unown data we will need
+    u32 personality;
+    u8 limit;
+    u32 letter_data;
+
+    // this is impossible.
+    if (letter > (NUM_UNOWN_FORMS-1))
+        return Random32();
+
+    limit = 9;
+    if (letter > 3)
+        limit = 8;
+
+    // It's okay to use _RandomRangeGood_Multiply here because there are two
+    // possible limit values.
+    letter_data = _RandomRangeGood_Multiply(limit) * 28 + letter;
+
+    // Okay, now make it a personality
+    personality = (Random32() & 0xFCFCFCFCU)
+        | ((letter_data >> 6) << 24)
+        | ((letter_data >> 4 & 0x3) << 16)
+        | ((letter_data >> 2 & 0x3) << 8)
+        | (letter_data & 0x3);
+
+    return personality;
+}
+
 void CreateMonWithNature(struct Pokemon *mon, u16 species, u8 level, u8 fixedIV, u8 nature)
 {
-    u32 personality;
-
-    do
-    {
-        personality = Random32();
-    }
-    while (nature != GetNatureFromPersonality(personality));
-
-    CreateMon(mon, species, level, fixedIV, 1, personality, OT_ID_PLAYER_ID, 0);
+    CreateMon(mon, species, level, fixedIV, 1, GeneratePersonalityByNature(nature), OT_ID_PLAYER_ID, 0);
 }
 
 void CreateMonWithGenderNatureLetter(struct Pokemon *mon, u16 species, u8 level, u8 fixedIV, u8 gender, u8 nature, u8 unownLetter)
 {
     u32 personality;
+    u8 genderByteBase, genderByteLimit, genderByteMaximum;
+    bool8 canForceGender;
+
+    GetMonGenderByteParameters(species, gender, &genderByteBase, &genderByteLimit);
+    canForceGender = !(genderByteBase == 0 && genderByteBase == 255);
 
     if ((u8)(unownLetter - 1) < NUM_UNOWN_FORMS)
     {
-        u16 actualLetter;
+        unownLetter--;
 
         do
         {
-            personality = Random32();
-            actualLetter = ((((personality & 0x3000000) >> 18) | ((personality & 0x30000) >> 12) | ((personality & 0x300) >> 6) | (personality & 0x3)) % 28);
+            // The Unown letter is less likely to be correct than the nature or gender
+            // so it's more efficient to ensure that it is correct first.
+            personality = GeneratePersonalityByUnownLetter(unownLetter);
         }
-        while (nature != GetNatureFromPersonality(personality)
-            || gender != GetGenderFromSpeciesAndPersonality(species, personality)
-            || actualLetter != unownLetter - 1);
+        while ((nature != GetNatureFromPersonality(personality))
+            || (canForceGender && gender != GetGenderFromSpeciesAndPersonality(species, personality)));
     }
     else
     {
         do
         {
-            personality = Random32();
+            personality = GeneratePersonalityByNature(nature);
         }
-        while (nature != GetNatureFromPersonality(personality)
-            || gender != GetGenderFromSpeciesAndPersonality(species, personality));
+        while (canForceGender && gender != GetGenderFromSpeciesAndPersonality(species, personality));
     }
 
     CreateMon(mon, species, level, fixedIV, 1, personality, OT_ID_PLAYER_ID, 0);
@@ -1893,13 +1971,12 @@ void CreateMaleMon(struct Pokemon *mon, u16 species, u8 level)
 {
     u32 personality;
     u32 otId;
+    u8 genderByteBase, genderByteLimit, genderByte;
 
-    do
-    {
-        otId = Random32();
-        personality = Random32();
-    }
-    while (GetGenderFromSpeciesAndPersonality(species, personality) != MON_MALE);
+    GetMonGenderByteParameters(species, MON_MALE, &genderByteBase, &genderByteLimit);
+    genderByte = (u8)RandomRangeGood(genderByteLimit) + genderByteBase;
+    otId = Random32();
+    personality = (RandomBits32(24) << 8) | genderByte;
     CreateMon(mon, species, level, 32, 1, personality, OT_ID_PRESET, otId);
 }
 

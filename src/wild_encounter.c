@@ -30,7 +30,6 @@ static EWRAM_DATA struct WildEncounterData sWildEncounterData = {};
 static EWRAM_DATA bool8 sWildEncountersDisabled = FALSE;
 
 static bool8 UnlockedTanobyOrAreNotInTanoby(void);
-static u32 GenerateUnownPersonalityByLetter(u8 letter);
 static bool8 IsWildLevelAllowedByRepel(u8 level);
 static void ApplyFluteEncounterRateMod(u32 *rate);
 static u8 GetFluteEncounterRateModType(void);
@@ -224,24 +223,14 @@ static void GenerateWildMon(u16 species, u8 level, u8 slot)
     ZeroEnemyPartyMons();
     if (species != SPECIES_UNOWN)
     {
-        CreateMonWithNature(&gEnemyParty[0], species, level, 32, RandomRangeGood(25));
+        CreateMon(&gEnemyParty[0], species, level, 32, FALSE, 0, OT_ID_PLAYER_ID, 0)
     }
     else
     {
         chamber = gSaveBlock1Ptr->location.mapNum - MAP_NUM(SEVEN_ISLAND_TANOBY_RUINS_MONEAN_CHAMBER);
-        personality = GenerateUnownPersonalityByLetter(sUnownLetterSlots[chamber][slot]);
+        personality = GeneratePersonalityByUnownLetter(sUnownLetterSlots[chamber][slot]);
         CreateMon(&gEnemyParty[0], species, level, 32, TRUE, personality, FALSE, 0);
     }
-}
-
-static u32 GenerateUnownPersonalityByLetter(u8 letter)
-{
-    u32 personality;
-    do
-    {
-        personality = Random32();
-    } while (GetUnownLetterByPersonalityLoByte(personality) != letter);
-    return personality;
 }
 
 u8 GetUnownLetterByPersonalityLoByte(u32 personality)
