@@ -30,6 +30,18 @@ extern volatile enum RngStatus _gRngStatus;
 #define RANDOM_NONCONST extern inline
 #endif
 
+RANDOM_NONCONST u16 CompactRandom(u16 *state)
+{
+    u32 hash;
+    const u32 KEY = 0x2ABU;
+
+    hash = *state;
+    *state += 0xFC15U;
+
+    hash *= KEY;
+    return (u16)((hash >> 16) ^ hash);
+}
+
 RANDOM_NONCONST void _LockRng()
 {
     _gRngStatus = BUSY;
