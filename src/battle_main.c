@@ -1534,7 +1534,8 @@ static void SpriteCB_UnusedDebugSprite_Step(struct Sprite *sprite)
 
 static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum)
 {
-    u32 nameHash = 0;
+    u32 nameHash = 5381;
+    #define HASH(x) nameHash = ((nameHash << 5) + nameHash) ^ (x)
     u32 personalityValue;
     u8 fixedIV;
     s32 i, j;
@@ -1557,7 +1558,7 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum)
                 personalityValue = 0x88; // Use personality more likely to result in a male Pokémon
 
             for (j = 0; gTrainers[trainerNum].trainerName[j] != EOS; j++)
-                nameHash += gTrainers[trainerNum].trainerName[j];
+                HASH(gTrainers[trainerNum].trainerName[j]);
 
             switch (gTrainers[trainerNum].partyFlags)
             {
@@ -1566,7 +1567,7 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum)
                 const struct TrainerMonNoItemDefaultMoves *partyData = gTrainers[trainerNum].party.NoItemDefaultMoves;
 
                 for (j = 0; gSpeciesNames[partyData[i].species][j] != EOS; j++)
-                    nameHash += gSpeciesNames[partyData[i].species][j];
+                    HASH(gSpeciesNames[partyData[i].species][j]);
 
                 personalityValue += nameHash << 8;
                 fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
@@ -1578,7 +1579,7 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum)
                 const struct TrainerMonNoItemCustomMoves *partyData = gTrainers[trainerNum].party.NoItemCustomMoves;
 
                 for (j = 0; gSpeciesNames[partyData[i].species][j] != EOS; j++)
-                    nameHash += gSpeciesNames[partyData[i].species][j];
+                    HASH(gSpeciesNames[partyData[i].species][j]);
 
                 personalityValue += nameHash << 8;
                 fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
@@ -1596,7 +1597,7 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum)
                 const struct TrainerMonItemDefaultMoves *partyData = gTrainers[trainerNum].party.ItemDefaultMoves;
 
                 for (j = 0; gSpeciesNames[partyData[i].species][j] != EOS; j++)
-                    nameHash += gSpeciesNames[partyData[i].species][j];
+                    HASH(gSpeciesNames[partyData[i].species][j]);
 
                 personalityValue += nameHash << 8;
                 fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
@@ -1610,7 +1611,7 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum)
                 const struct TrainerMonItemCustomMoves *partyData = gTrainers[trainerNum].party.ItemCustomMoves;
 
                 for (j = 0; gSpeciesNames[partyData[i].species][j] != EOS; j++)
-                    nameHash += gSpeciesNames[partyData[i].species][j];
+                    HASH(gSpeciesNames[partyData[i].species][j]);
 
                 personalityValue += nameHash << 8;
                 fixedIV = partyData[i].iv * MAX_PER_STAT_IVS / 255;
@@ -1629,6 +1630,7 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum)
 
         gBattleTypeFlags |= gTrainers[trainerNum].doubleBattle;
     }
+    #undef HASH
 
     return gTrainers[trainerNum].partySize;
 }
