@@ -18,7 +18,7 @@ enum RngStatus {
 
 extern const u16 clz_Lookup[];
 extern struct RngState gRngState;
-extern enum RngStatus gRngStatus;
+extern volatile enum RngStatus gRngStatus;
 
 #if MODERN
 #define RANDOM_IMPL_NONCONST extern inline __attribute__((gnu_inline))
