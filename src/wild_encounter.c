@@ -16,6 +16,7 @@
 #include "constants/maps.h"
 #include "constants/abilities.h"
 #include "constants/items.h"
+#include "pokemon.h"
 
 struct WildEncounterData
 {
@@ -223,7 +224,7 @@ static void GenerateWildMon(u16 species, u8 level, u8 slot)
     ZeroEnemyPartyMons();
     if (species != SPECIES_UNOWN)
     {
-        CreateMon(&gEnemyParty[0], species, level, 32, FALSE, 0, OT_ID_PLAYER_ID, 0)
+        CreateMon(&gEnemyParty[0], species, level, 32, FALSE, 0, OT_ID_PLAYER_ID, 0);
     }
     else
     {

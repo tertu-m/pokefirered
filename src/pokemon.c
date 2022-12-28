@@ -1897,7 +1897,7 @@ static u32 GeneratePersonalityByNature(u8 nature)
     return personality_base * 25 + nature;
 }
 
-u32 GenerateUnownPersonalityByLetter(u8 letter)
+u32 GeneratePersonalityByUnownLetter(u8 letter)
 {
     // How this works now:
     // Generate the 8 bits of Unown data we will need
