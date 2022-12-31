@@ -26,7 +26,7 @@ static u32 AdvanceRngInternal(void) {
     result = state.a + b + state.counter++;
 
     state.a = b ^ (b >> 9);
-    state.b = (c << 3) + 1;
+    state.b = c * 9;
     state.c = ((c << 21) | (c >> 11)) + result;
 
     return result;
