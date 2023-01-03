@@ -728,7 +728,10 @@ static void SetTitleScreenScene_Cry(s16 *data)
     case 2:
         if (!gPaletteFade.active)
         {
+            #if DEFERRED_SEEDING==0
             SeedRngAndSetTrainerId();
+            #endif // DEFERRED_SEEDING
+
             SetSaveBlocksPointers();
             ResetMenuAndMonGlobals();
             Save_ResetSaveCounters();

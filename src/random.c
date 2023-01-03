@@ -6,6 +6,8 @@
 // of rand and srand in the ISO C standard.
 
 struct RngState gRngState;
+static EWRAM_DATA struct RngState encryptionRngState;
+static bool8 encryptionRngSeeded = FALSE;
 
 volatile enum RngStatus _gRngStatus;
 
@@ -21,10 +23,9 @@ void BurnRandomNumber(void) {
 const u16 clz_Lookup[] = {31, 22, 30, 21, 18, 10, 29, 2, 20, 17, 15, 13, 9,
     6, 28, 1, 23, 19, 11, 3, 16, 14, 7, 24, 12, 4, 8, 25, 5, 26, 27, 0};
 
-static void SeedRngInternal(u32 seed_c, u32 seed_b, u32 seed_a)
+static void SeedRngState(struct RngState *state, u32 seed_c, u32 seed_b, u32 seed_a)
 {
     u32 i;
-    _gRngStatus = UNINITIALIZED;
 
     gRngState.c = seed_c;
     gRngState.b = seed_b;
@@ -33,24 +34,38 @@ static void SeedRngInternal(u32 seed_c, u32 seed_b, u32 seed_a)
 
     for (i = 0; i < 20; i++)
         _Random32_Unlocked();
+}
 
-    _gRngStatus = IDLE;
+static void DoStandardSeed(struct RngState *state, u32 streamCode)
+{
+    u32 timers, vblank;
+    _StopSeedTimer();
+    timers = ((u32)REG_TM2CNT_L << 16) | REG_TM1CNT_L;
+    vblank = gMain.vblankCounter2;
+    SeedRngState(state, timers, vblank, streamCode);
+
+    #if DEFERRED_SEEDING == 1
+        StartSeedTimer();
+    #endif // DEFERRED_SEEDING
 }
 
 void BootSeedRng(void)
 {
     u32 timers, vblank;
 
-    REG_TM1CNT_H = 0;
-    REG_TM2CNT_H = 0;
-    timers = ((u32)REG_TM2CNT_L << 16) | REG_TM1CNT_L;
-    vblank = gMain.vblankCounter2;
-    SeedRngInternal(timers, vblank, 0xBEEF5EEDU);
+    _gRngStatus = UNINITIALIZED;
+    DoStandardSeed(&gRngState, 0xBEEF5EEDU);
+    _gRngStatus = IDLE;
 }
 
-// Starts
-void StartSeedTimer(void)
-{
-    REG_TM1CNT_H = 0x80;
-    REG_TM2CNT_H = 0x82;
+#if DEFERRED_SEEDING == 1
+u32 EncryptionRandom(void) {
+    if (!encryptionRngSeeded)
+    {
+        encryptionRngSeeded = TRUE;
+        DoStandardSeed(&encryptionRngState, 0xA5EC4E7U);
+    }
+
+    return _AdvanceRngState(&encryptionRngState);
 }
+#endif

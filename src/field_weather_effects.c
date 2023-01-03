@@ -521,18 +521,14 @@ static void StartRainSpriteFall(struct Sprite *sprite)
     int tileX;
     int tileY;
 
-    if (sprite->tRandom == 0)
-        sprite->tRandom = 361;
-
-    rand = ISO_RANDOMIZE2(sprite->tRandom);
-    sprite->tRandom = ((rand & 0x7FFF0000) >> 16) % 600;
+    rand = CompactRandomS16State(&sprite->tRandom);
 
     numFallingFrames = sRainSpriteFallingDurations[gWeatherPtr->isDownpour][0];
 
-    tileX = sprite->tRandom % 30;
+    tileX = rand % 30;
     sprite->tPosX = tileX * 8; // Useless assignment, leftover from before fixed-point values were used
 
-    tileY = sprite->tRandom / 30;
+    tileY = rand / 30;
     sprite->tPosY = tileY * 8; // Useless assignment, leftover from before fixed-point values were used
 
     sprite->tPosX = tileX;

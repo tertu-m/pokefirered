@@ -53,7 +53,14 @@ void CopyTrainerId(u8 *dst, u8 *src)
 
 static void InitPlayerTrainerId(void)
 {
-    u32 trainerId = (Random() << 0x10) | GetGeneratedTrainerIdLower();
+    u32 trainerId;
+
+    #if DEFERRED_SEEDING == 1
+    trainerId = Random32();
+    #else
+    trainerId = (Random() << 0x10) | GetGeneratedTrainerIdLower();
+    #endif // DEFERRED_SEEDING
+
     SetTrainerId(trainerId, gSaveBlock2Ptr->playerTrainerId);
 }
 

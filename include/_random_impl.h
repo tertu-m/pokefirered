@@ -4,20 +4,20 @@
 #error _random_impl.h was included incorrectly.
 #endif
 
-RANDOM_IMPL_NONCONST u32 _Random32_Unlocked(void) {
-    u32 b, c, result;
+#if MODERN==1
+#define UNLIKELY(x) (__builtin_expect((x),0))
+#else
+#define UNLIKELY(x) (x)
+#endif
 
-    b = gRngState.b;
-    c = gRngState.c;
-    result = gRngState.a + b + gRngState.counter++;
-
-    gRngState.a = b ^ (b >> 9);
-    gRngState.b = (c << 3) + 1;
-    gRngState.c = ((c << 21) | (c >> 11)) + result;
-
-    return result;
+RANDOM_IMPL_NONCONST void _LockRng()
+{
+    #if DEFERRED_SEEDING==1
+        if (UNLIKELY(_gRngStatus == UNINITIALIZED))
+            BootSeedRng();
+    #endif // DEFERRED_SEEDING
+    _gRngStatus = BUSY;
 }
-
 
 RANDOM_IMPL_NONCONST u32 Random32(void) {
     u32 result;
@@ -47,3 +47,4 @@ RANDOM_IMPL_CONST const u16 CountLeadingZeroes(const u32 value)
 
 #undef RANDOM_IMPL_CONST
 #undef RANDOM_IMPL_NONCONST
+#undef UNLIKELY

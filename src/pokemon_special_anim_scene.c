@@ -1249,9 +1249,11 @@ static void SpriteCB_Star(struct Sprite *sprite)
 static void PSAScene_SeedRandomInTask(struct PokemonSpecialAnimScene * scene)
 {
     u8 taskId;
+    u16 rand;
     LoadOutwardSpiralDotsGfx();
     taskId = CreateTask(Task_UseItem_OutwardSpiralDots, 1);
-    SetWordTaskArg(taskId, tOff_RngState, 2022069025);
+    rand = Random();
+    memcpy(&gTasks[taskId].data[tOff_RngState], &rand, sizeof(u16));
     gTasks[taskId].tAngle = 0xE0;
 }
 
@@ -1275,7 +1277,7 @@ static void Task_UseItem_OutwardSpiralDots(u8 taskId)
             struct Sprite *sprite = PSA_GetSceneWork()->itemIconSprite;
             x = sprite->x + sprite->x2;
             y = sprite->y + sprite->y2;
-            ampl = (PSAScene_RandomFromTask(taskId) % 21) + 70;
+            ampl = (((u32)PSAScene_RandomFromTask(taskId) * 21) >> 16) + 70;
             x2 = x + ((u32)(gSineTable[tAngle + 0x40] * ampl) >> 8);
             y2 = y + ((u32)(gSineTable[tAngle       ] * ampl) >> 8);
             tAngle += 0x4C;
@@ -1308,10 +1310,7 @@ static void Task_UseItem_OutwardSpiralDots(u8 taskId)
 
 static u16 PSAScene_RandomFromTask(u8 taskId)
 {
-    u32 state = GetWordTaskArg(taskId, tOff_RngState);
-    state = ISO_RANDOMIZE1(state);
-    SetWordTaskArg(taskId, tOff_RngState, state);
-    return state >> 16;
+    return CompactRandomS16State(&gTasks[taskId].data[tOff_RngState]);
 }
 
 static void SpriteCallback_UseItem_OutwardSpiralDots(struct Sprite *sprite)
@@ -1445,9 +1444,19 @@ static void CreateLevelUpVerticalSprite(u8 taskId, s16 *data)
     spriteId = CreateSprite(&template, ((tMadeSprCt * 219) & 0x3F) + tXpos, tYpos, tSubpriority);
     if (spriteId != MAX_SPRITES)
     {
+        s16 randSource;
+        u16 normal, i;
+        randSource = tMadeSprCt;
+        normal = 0;
+        for (i = 0; i < 4; i++)
+        {
+            normal += CompactRandomS16State(&randSource) & 0x3F;
+        }
+        normal >>= 4;
+
         gSprites[spriteId].oam.priority = tPriority;
         gSprites[spriteId].tsYsubpixel = 0;
-        gSprites[spriteId].tsSpeed = (ISO_RANDOMIZE1(tMadeSprCt) & 0x3F) + 0x20;
+        gSprites[spriteId].tsSpeed = ((normal - 0x20) & 0x3F) + 0x20;
         gSprites[spriteId].tsTaskId = taskId;
         tActiveSprCt++;
     }

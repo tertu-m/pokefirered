@@ -80,7 +80,9 @@ u8 sVcountBeforeSound;
 static IntrFunc * const sTimerIntrFunc = gIntrTable + 0x7;
 
 EWRAM_DATA u8 gDecompressionBuffer[0x4000] = {0};
+#if DEFERRED_SEEDING == 0
 EWRAM_DATA u16 gTrainerId = 0;
+#endif // DEFERRED_SEEDING
 
 static void UpdateLinkAndCallCallbacks(void);
 static void InitMainCallbacks(void);
@@ -231,6 +233,7 @@ void SetMainCallback2(MainCallback callback)
     gMain.state = 0;
 }
 
+#if DEFERRED_SEEDING == 0
 void SeedRngAndSetTrainerId(void)
 {
     BootSeedRng();
@@ -241,6 +244,7 @@ u16 GetGeneratedTrainerIdLower(void)
 {
     return gTrainerId;
 }
+#endif // DEFERRED_SEEDING
 
 void EnableVCountIntrAtLine150(void)
 {

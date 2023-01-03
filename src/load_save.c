@@ -64,13 +64,20 @@ void ClearSav1(void)
     CpuFill16(0, &gSaveBlock1, sizeof(struct SaveBlock1) + sizeof(gSaveBlock1_DMA));
 }
 
+
 void SetSaveBlocksPointers(void)
 {
     u32 offset;
     struct SaveBlock1** sav1_LocalVar = &gSaveBlock1Ptr;
     void *oldSave = (void *)gSaveBlock1Ptr;
 
-    offset = (Random()) & ((SAVEBLOCK_MOVE_RANGE - 1) & ~3);
+    #if DEFERRED_SEEDING == 1
+    {
+        offset = ((u16)(EncryptionRandom() >> 16)) & ((SAVEBLOCK_MOVE_RANGE - 1) & ~3);
+    }
+    #else
+        offset = (Random()) & ((SAVEBLOCK_MOVE_RANGE - 1) & ~3);
+    #endif // DEFERRED_SEEDING
 
     gSaveBlock2Ptr = (void *)(&gSaveBlock2) + offset;
     *sav1_LocalVar = (void *)(&gSaveBlock1) + offset;
@@ -121,7 +128,11 @@ void MoveSaveBlocks_ResetHeap(void)
     gMain.vblankCallback = vblankCB;
 
     // create a new encryption key
-    encryptionKey = Random32();
+    #if DEFERRED_SEEDING == 0
+        encryptionKey = Random32();
+    #else
+        encryptionKey = EncryptionRandom();
+    #endif
     ApplyNewEncryptionKeyToAllEncryptedData(encryptionKey);
     gSaveBlock2Ptr->encryptionKey = encryptionKey;
 }

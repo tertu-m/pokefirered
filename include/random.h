@@ -20,7 +20,7 @@ extern const u16 clz_Lookup[];
 extern struct RngState gRngState;
 extern volatile enum RngStatus _gRngStatus;
 
-#if MODERN
+#if MODERN==1
 #define RANDOM_IMPL_NONCONST extern inline __attribute__((gnu_inline))
 #define RANDOM_IMPL_CONST extern inline __attribute__((const,gnu_inline))
 #define RANDOM_NONCONST extern inline __attribute__((gnu_inline))
@@ -29,6 +29,19 @@ extern volatile enum RngStatus _gRngStatus;
 #define RANDOM_IMPL_CONST extern inline __attribute__((const))
 #define RANDOM_NONCONST extern inline
 #endif
+
+// Starts
+RANDOM_NONCONST void StartSeedTimer(void)
+{
+    REG_TM1CNT_H = 0x80;
+    REG_TM2CNT_H = 0x82;
+}
+
+RANDOM_NONCONST void _StopSeedTimer(void)
+{
+    REG_TM1CNT_H = 0;
+    REG_TM2CNT_H = 0;
+}
 
 RANDOM_NONCONST u16 CompactRandom(u16 *state)
 {
@@ -42,14 +55,46 @@ RANDOM_NONCONST u16 CompactRandom(u16 *state)
     return (u16)((hash >> 16) ^ hash);
 }
 
-RANDOM_NONCONST void _LockRng()
+RANDOM_NONCONST u16 CompactRandomS16State(s16 *state)
 {
-    _gRngStatus = BUSY;
+    u16 result;
+    union crpun_u {
+        s16 signed_part;
+        u16 unsigned_part;
+    } crpun;
+
+    crpun.signed_part = *state;
+    result = CompactRandom(&crpun.unsigned_part);
+    *state = crpun.signed_part;
+
+    return result;
 }
+
+//Sets the initial seed value of the pseudorandom number generator
+void BootSeedRng(void);
 
 RANDOM_NONCONST void _UnlockRng()
 {
     _gRngStatus = IDLE;
+}
+
+RANDOM_NONCONST u32 _AdvanceRngState(struct RngState *state)
+{
+    u32 b, c, result;
+
+    b = state->b;
+    c = state->c;
+    result = state->a + b + state->counter++;
+
+    state->a = b ^ (b >> 9);
+    state->b = c * 9;
+    state->c = ((c << 21) | (c >> 11)) + result;
+
+    return result;
+}
+
+RANDOM_NONCONST u32 _Random32_Unlocked(void) {
+    return _AdvanceRngState(&gRngState);
 }
 
 #include "_random_impl.h"
@@ -75,11 +120,6 @@ void BurnRandomNumber(void);
 #define RAND_MULT 1103515245
 #define ISO_RANDOMIZE1(val)(RAND_MULT * (val) + 24691)
 #define ISO_RANDOMIZE2(val)(RAND_MULT * (val) + 12345)
-
-//Sets the initial seed value of the pseudorandom number generator
-void BootSeedRng(void);
-
-void StartSeedTimer(void);
 
 //Returns a 16-bit pseudorandom number
 RANDOM_NONCONST u16 Random(void) {
@@ -134,6 +174,10 @@ RANDOM_NONCONST u16 RandomPercentageGood() {
     return _RandomRangeGood_Multiply(100);
 }
 
+#if DEFERRED_SEEDING == 1
+u32 EncryptionRandom(void);
+#endif
+
 // Taken from Linux. Devised by Martin Uecker.
 #define __is_constexpr(x) \
     (sizeof(int) == sizeof(*(8 ? ((void *)((long)(x) * 0l)) : (int *)8)))
@@ -141,5 +185,6 @@ RANDOM_NONCONST u16 RandomPercentageGood() {
 #define RandomRangeGood(x) (__is_constexpr((x)) ? _RandomRangeGood_Multiply((x)) : _RandomRangeGood_Mask((x)))
 
 #undef RANDOM_NONCONST
+#undef UNLIKELY
 
 #endif // GUARD_RANDOM_H

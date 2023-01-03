@@ -5,6 +5,7 @@ GAME_REVISION ?= 0
 GAME_LANGUAGE ?= ENGLISH
 MODERN        ?= 0
 COMPARE       ?= 0
+DEFERRED_SEEDING ?= 0
 
 # For gbafix
 MAKER_CODE  := 01

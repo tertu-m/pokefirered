@@ -1550,15 +1550,27 @@ static u8 CreateNPCTrainerParty(struct Pokemon *party, u16 trainerNum)
         for (i = 0; i < gTrainers[trainerNum].partySize; i++)
         {
 
-            if (gTrainers[trainerNum].doubleBattle == TRUE)
-                personalityValue = 0x80;
-            else if (gTrainers[trainerNum].encounterMusic_gender & F_TRAINER_FEMALE)
-                personalityValue = 0x78; // Use personality more likely to result in a female Pokémon
-            else
-                personalityValue = 0x88; // Use personality more likely to result in a male Pokémon
-
             for (j = 0; gTrainers[trainerNum].trainerName[j] != EOS; j++)
                 HASH(gTrainers[trainerNum].trainerName[j]);
+
+            if (gTrainers[trainerNum].doubleBattle == TRUE)
+                personalityValue = 0x80;
+            else
+            {
+                // Calculate a random personality value with 1 reroll.
+                bool8 isFemaleTrainer;
+                u16 crandState;
+
+                isFemaleTrainer = (gTrainers[trainerNum].encounterMusic_gender & F_TRAINER_FEMALE) != 0;
+                crandState = (u16)(nameHash >> 16 ^ nameHash);
+
+                personalityValue = (u8)(CompactRandom(&crandState) >> 8);
+
+                if ((isFemaleTrainer && personalityValue > 0x70)
+                    || (!isFemaleTrainer && personalityValue < 0x80))
+                    personalityValue = (u8)(CompactRandom(&crandState) >> 8);
+
+            }
 
             switch (gTrainers[trainerNum].partyFlags)
             {

@@ -29,6 +29,7 @@
 #include "constants/quest_log.h"
 #include "constants/field_weather.h"
 #include "constants/event_object_movement.h"
+#include "random.h"
 
 struct TrainerFanClub
 {
@@ -248,9 +249,9 @@ static void QLogCB_Playback(void)
 
     if (sQuestLogCurrentScene.sceneEndMode == 0)
     {
-        if (gQuestLogPlaybackState != 0 
-         || sQuestLogCurrentScene.playbackSubstate == 1 
-         || (sQuestLogCurrentScene.cursor < NELEMS(gUnknown_203AE0C) 
+        if (gQuestLogPlaybackState != 0
+         || sQuestLogCurrentScene.playbackSubstate == 1
+         || (sQuestLogCurrentScene.cursor < NELEMS(gUnknown_203AE0C)
           && gUnknown_203AE0C[sQuestLogCurrentScene.cursor] != NULL))
             QuestLog_PlayCurrentEvent();
         else
@@ -514,7 +515,7 @@ static void QuestLogPlaybackSetObjectEventTemplates(u8 sceneNum)
 {
     struct QuestLog *questLog = &gSaveBlock1Ptr->questLog[sceneNum];
     u16 i;
-    
+
     for (i = 0; i < 64; i++)
     {
         if (questLog->npcData[i].negx)
@@ -535,7 +536,7 @@ static void QuestLogPlaybackSetObjectEventTemplates(u8 sceneNum)
 static void QLPlayback_SetInitialPlayerPosition(u8 sceneNum, bool8 isWarp)
 {
     struct WarpData sp0;
-    
+
     if (!isWarp)
     {
         gSaveBlock1Ptr->location.mapGroup = gSaveBlock1Ptr->questLog[sceneNum].mapGroup;
@@ -592,12 +593,17 @@ struct PokemonAndSomethingElse
     u16 saneBoxesCount;
 };
 
+// I think a good name for this function would be RemoveInvalidMons -tertu
 void sub_8111438(void)
 {
     struct PokemonAndSomethingElse *r9 = AllocZeroed(sizeof(struct PokemonAndSomethingElse));
     u16 r0, r3, r5, r6;
 
+    #if DEFERRED_SEEDING == 1
+    CreateMon(&r9->mon, SPECIES_RATTATA, 1, 0x10, TRUE, EncryptionRandom(), 0, 0);
+    #else
     CreateMon(&r9->mon, SPECIES_RATTATA, 1, 0x20, FALSE, 0, 0, 0);
+    #endif
     r0 = VarGet(VAR_QUEST_LOG_MON_COUNTS);
     r9->sanePartyCount = r0 >> 12;
     r9->saneBoxesCount = r0 % 0x1000;

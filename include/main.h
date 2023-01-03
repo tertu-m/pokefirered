@@ -65,8 +65,11 @@ void ClearPokemonCrySongs(void);
 void RestoreSerialTimer3IntrHandlers(void);
 void SetVBlankCounter1Ptr(u32 *ptr);
 void DisableVBlankCounter1(void);
+
+#if DEFERRED_SEEDING == 0
 void SeedRngAndSetTrainerId(void);
 u16 GetGeneratedTrainerIdLower(void);
+#endif // DEFERRED_SEEDING
 
 #define GAME_CODE_LENGTH 4
 extern const char RomHeaderGameCode[GAME_CODE_LENGTH];
