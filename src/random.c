@@ -80,7 +80,7 @@ void BootSeedRng(void)
 void StartSeedTimer(void)
 {
     REG_TM1CNT_H = 0x80;
-    REG_TM2CNT_H = 0x82;
+    REG_TM2CNT_H = 0x84;
 }
 
 #define RANDOM_IMPL_NONCONST
