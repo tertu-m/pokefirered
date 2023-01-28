@@ -12,7 +12,7 @@ RANDOM_IMPL_NONCONST u32 _Random32_Unlocked(void) {
     result = gRngState.a + b + gRngState.counter++;
 
     gRngState.a = b ^ (b >> 9);
-    gRngState.b = (c << 3) + 1;
+    gRngState.b = (c << 3) + c;
     gRngState.c = ((c << 21) | (c >> 11)) + result;
 
     return result;
